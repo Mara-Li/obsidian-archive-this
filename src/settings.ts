@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import { type App, PluginSettingTab, Setting } from "obsidian";
 import { FolderSuggester } from "./folder_suggester";
 import type { ArchiveThisSettings } from "./interfaces";
@@ -18,20 +19,20 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl).setName("Archive folder").addSearch((cb) => {
-			cb.setPlaceholder("Archives").setValue(this.settings.archiveFolder);
+		new Setting(containerEl).setName(i18next.t("settings.folder")).addSearch((cb) => {
+			cb.setPlaceholder(i18next.t("settings.folderPlaceholder")).setValue(
+				this.settings.archiveFolder
+			);
 			new FolderSuggester(cb.inputEl, this.app, async (result) => {
 				this.settings.archiveFolder = result.trim();
 				await this.plugin.saveSettings();
 			});
 		});
 
-		new Setting(containerEl).setHeading().setName("Delete folder when empty");
+		new Setting(containerEl).setHeading().setName(i18next.t("settings.empty.title"));
 		new Setting(containerEl)
-			.setName("In source")
-			.setDesc(
-				"When moving file(s) or folder(s) in archive, delete the root when it is empty"
-			)
+			.setName(i18next.t("settings.empty.inSource.title"))
+			.setDesc(i18next.t("settings.empty.inSource.desc"))
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.deleteWhenEmpty.inSource).onChange(async (val) => {
 					this.settings.deleteWhenEmpty.inSource = val;
@@ -40,10 +41,8 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("In Archive")
-			.setDesc(
-				"When moving file(s) or folder(s) out of archive, delete the root when it is empty. Note: The archive folder won't be deleted even if empty."
-			)
+			.setName(i18next.t("settings.empty.inArchive.title"))
+			.setDesc(i18next.t("settings.empty.inArchive.desc"))
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.deleteWhenEmpty.inArchive).onChange(async (val) => {
 					this.settings.deleteWhenEmpty.inArchive = val;

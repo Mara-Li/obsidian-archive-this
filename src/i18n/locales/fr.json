@@ -2,6 +2,23 @@
   "cmd": {
     "archive": "Archive",
     "archiveAll": "Archiver tout",
-    "swap": "Archiver/restaurer"
+    "swap": "Archiver/restaurer",
+    "restore": "Restaurer",
+    "restoreAll": "Tous restaurer"
+  },
+  "settings": {
+    "empty": {
+      "inArchive": {
+        "desc": "Quand le(s) fichier(s) ou dossier(s) sont déplacés hors de l'archive, supprime le dossier s'il est vide. Note : Le dossier d'Archive ne sera pas supprimé, même si vide.",
+        "title": "Dans l'archive"
+      },
+      "inSource": {
+        "desc": "Quand le(s) fichier(s) ou dossier(s) sont archivés, supprime le dossier parent s'il est vide.",
+        "title": "Dans la source"
+      },
+      "title": "Supprimer le dossier quand vide"
+    },
+    "folder": "Dossier d'archive",
+    "folderPlaceholder": "Archives"
   }
 }

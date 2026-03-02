@@ -1,9 +1,24 @@
 {
   "cmd": {
-    "restore": "Restore from archive",
+    "restore": "Restore",
     "archive": "Archive",
     "archiveAll": "Archive all",
     "restoreAll": "Restore all",
     "swap": "Archive/restore"
+  },
+  "settings": {
+    "folder": "Archive folder",
+    "folderPlaceholder": "Archives",
+    "empty": {
+      "title": "Delete folder when empty",
+      "inSource": {
+        "title": "In source",
+        "desc": "When archiving file(s) or folder(s), delete the parent folder when it is empty."
+      },
+      "inArchive": {
+        "title": "In archive",
+        "desc": "When moving file(s) or folder(s) out of archive, delete the folder when it is empty. Note: The archive folder won't be deleted even if empty."
+      }
+    }
   }
 }
