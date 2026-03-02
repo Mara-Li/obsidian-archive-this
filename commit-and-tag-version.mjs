@@ -76,6 +76,7 @@ if (opt.beta) {
 		tagPrefix: "",
 		scripts: {
 			postchangelog: "node hooks/_changelog.mjs -b",
+			postbump: "node hooks/_versions.mjs",
 		},
 	})
 		.then(() => {
@@ -118,6 +119,8 @@ if (opt.beta) {
 		releaseAs: opt.releaseAs,
 		scripts: {
 			postchangelog: "node hooks/_changelog.mjs",
+			postbump: "node hooks/_versions.mjs",
+
 		},
 	})
 		.then(() => {
