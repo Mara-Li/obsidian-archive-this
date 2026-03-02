@@ -1,55 +1,51 @@
 {
-  "name": "archive-this",
-  "version": "1.0.0",
-  "description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
-  "main": "main.ts",
-  "private": true,
-  "repository": "https://github.com/mara-li/obsidian-archive-this",
-  "scripts": {
-    "prebuild": "tsc --noEmit --skipLibCheck",
-    "build": "node esbuild.config.mjs --production",
-    "dev:prod": "node esbuild.config.mjs --vault",
-    "dev": "node esbuild.config.mjs",
-    "export": "node esbuild.config.mjs --production --vault",
-    "bump": "dotenv -- node commit-and-tag-version.mjs",
-    "postbump": "dotenv -- if-env SKIP_POST_BUMP=true && echo skip bump || git push --follow-tags origin master",
-    "predeploy": "bun run bump",
-    "deploy": "bun run export",
-    "lint": "biome format --write src/",
-    "e2e": "bun run build && wdio run ./wdio.conf.mts"
-  },
-  "engines": {
-    "node": "^22.2.0"
-  },
-  "keywords": [],
-  "author": "Mara-Li",
-  "license": "GPL-3.0-or-later",
-  "devDependencies": {
-    "@biomejs/biome": "^2.4.4",
-    "@types/node": "^25.3.3",
-    "i18next": "^25.8.13",
-    "esbuild": "0.27.3",
-    "obsidian": "^1.12.3",
-    "tslib": "2.8.1",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@delucis/if-env": "^1.1.2",
-    "@types/bun": "^1.3.9",
-    "ansi-colors": "^4.1.3",
-    "commander": "^14.0.3",
-    "commit-and-tag-version": "^12.6.1",
-    "dedent": "^1.7.2",
-    "dotenv-cli": "^11.0.0",
-    "obsidian-typings": "^4.106.0"
-  },
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "classic-level",
-    "edgedriver",
-    "electron",
-    "esbuild",
-    "geckodriver",
-    "obsidian-typings"
-  ]
+	"name": "archive-this",
+	"version": "1.0.0",
+	"description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
+	"main": "main.ts",
+	"private": true,
+	"repository": "https://github.com/mara-li/obsidian-archive-this",
+	"scripts": {
+		"prebuild": "tsc --noEmit --skipLibCheck",
+		"build": "node esbuild.config.mjs --production",
+		"dev:prod": "node esbuild.config.mjs --vault",
+		"dev": "node esbuild.config.mjs",
+		"bump": "dotenv -- node commit-and-tag-version.mjs",
+		"postbump": "dotenv -- if-env SKIP_POST_BUMP=true && echo skip bump || git push --follow-tags origin master",
+		"lint": "biome check --unsafe --write src/"
+	},
+	"engines": {
+		"node": "^22.2.0"
+	},
+	"keywords": [],
+	"author": "Mara-Li",
+	"license": "GPL-3.0-or-later",
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.4",
+		"@types/node": "^25.3.3",
+		"i18next": "^25.8.13",
+		"esbuild": "0.27.3",
+		"obsidian": "^1.12.3",
+		"tslib": "2.8.1",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"@delucis/if-env": "^1.1.2",
+		"@types/bun": "^1.3.9",
+		"ansi-colors": "^4.1.3",
+		"commander": "^14.0.3",
+		"commit-and-tag-version": "^12.6.1",
+		"dedent": "^1.7.2",
+		"dotenv-cli": "^11.0.0",
+		"obsidian-typings": "^4.106.0"
+	},
+	"trustedDependencies": [
+		"@biomejs/biome",
+		"classic-level",
+		"edgedriver",
+		"electron",
+		"esbuild",
+		"geckodriver",
+		"obsidian-typings"
+	]
 }
