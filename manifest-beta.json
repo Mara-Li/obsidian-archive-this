@@ -1,10 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "archive-this",
+	"name": "Archive This",
 	"version": "0.0.0",
 	"minAppVersion": "1.5.12",
-	"description": "This is a sample plugin",
-	"author": "Mara",
-	"authorUrl": "https://github.com/Mara",
+	"description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
+	"author": "Mara-Li",
+	"authorUrl": "https://github.com/Mara-Li",
 	"isDesktopOnly": false
 }

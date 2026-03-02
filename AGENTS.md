@@ -18,19 +18,19 @@
 ### Install
 
 ```bash
-<%= data.packageManager %> install
+bun install
 ```
 
 ### Dev (watch)
 
 ```bash
-<%= data.packageManager %> run dev
+bun run dev
 ```
 
 ### Production build
 
 ```bash
-<%= data.packageManager %> run build
+bun run build
 ```
 
 ## Linting
