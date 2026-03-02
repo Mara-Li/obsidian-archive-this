@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import builtins from "builtin-modules";
+import {builtinModules as builtins} from "node:module";
 import { Command } from "commander";
 import esbuild from "esbuild";
 import manifest from "./manifest.json" with { type: "json" };

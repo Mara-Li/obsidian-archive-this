@@ -4,6 +4,7 @@
   "description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
   "main": "main.ts",
   "private": true,
+  "repository": "https://github.com/mara-li/obsidian-archive-this",
   "scripts": {
     "prebuild": "tsc --noEmit --skipLibCheck",
     "build": "node esbuild.config.mjs --production",
@@ -26,7 +27,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",
     "@types/node": "^25.3.3",
-    "builtin-modules": "5.0.0",
     "i18next": "^25.8.13",
     "esbuild": "0.27.3",
     "obsidian": "^1.12.3",
@@ -36,19 +36,12 @@
   "dependencies": {
     "@delucis/if-env": "^1.1.2",
     "@types/bun": "^1.3.9",
-    "@types/mocha": "^10.0.10",
-    "@wdio/cli": "^9.24.0",
-    "@wdio/local-runner": "^9.24.0",
-    "@wdio/mocha-framework": "^9.24.0",
-    "@wdio/spec-reporter": "^9.24.0",
     "ansi-colors": "^4.1.3",
     "commander": "^14.0.3",
     "commit-and-tag-version": "^12.6.1",
     "dedent": "^1.7.2",
     "dotenv-cli": "^11.0.0",
-    "obsidian-typings": "^4.106.0",
-    "wdio-obsidian-reporter": "^2.3.3",
-    "wdio-obsidian-service": "^2.3.3"
+    "obsidian-typings": "^4.106.0"
   },
   "trustedDependencies": [
     "@biomejs/biome",

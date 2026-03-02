@@ -16,7 +16,6 @@
         "commander": "^14.0.3",
         "commit-and-tag-version": "^12.6.1",
         "dedent": "^1.7.2",
-        "dotenv": "^17.3.1",
         "dotenv-cli": "^11.0.0",
         "obsidian-typings": "^4.106.0",
         "wdio-obsidian-reporter": "^2.3.3",
