@@ -3,7 +3,7 @@ export interface ArchiveThisSettings {
 	deleteWhenEmpty: {
 		inSource: boolean;
 		inArchive: boolean;
-	}
+	};
 }
 
 export const DEFAULT_SETTINGS: ArchiveThisSettings = {
@@ -11,5 +11,5 @@ export const DEFAULT_SETTINGS: ArchiveThisSettings = {
 	deleteWhenEmpty: {
 		inSource: false,
 		inArchive: false,
-	}
-}
+	},
+};
