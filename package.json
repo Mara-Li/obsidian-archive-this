@@ -1,6 +1,6 @@
 {
   "name": "archive-this",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
   "main": "main.ts",
   "private": true,
