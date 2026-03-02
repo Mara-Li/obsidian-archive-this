@@ -1,14 +1,32 @@
 # Archive This
 
-Move to archive file(s) and folder(s) while keeping the hierarchy.
+Move files and folders to the archive while keeping the hierarchy.
 
-## ⚙️ Usage
+Some part of the code was taken from [para-shortcuts](https://github.com/gOATiful/para-shortcuts)
 
+## 🗜️ Usage
+
+The plugin adds commands for:
+- File menu (right-click menu in the explorer, works for both folders and files)
+- File**s** menu (multiple selected files/folders)
+
+The plugin automatically detects if the files or folders are in the archive folder or not:
+- If they are, the command allows you to restore from the archive
+- If not, the command allows you to archive them.
+
+> [!INFO]
+> When multiple files are selected and some are in the archive and others are not, the plugin will intelligently archive or restore on a per-file basis.
+
+## ⚙️ Settings
+
+Some settings are available in the settings tab:
+1. **Archive folder**: It will be created if it does not exist when using the archive command.
+2. **Delete when empty**: Delete the parent folder(s) of the moved file if they are empty. Separate options for both restore & archiving.
 
 ## 📥 Installation
 
 - [ ] From Obsidian's community plugins
-- [x] Using BRAT with `https://github.com/Mara-Li/`
+- [x] Using BRAT with `https://github.com/Mara-Li/obsidian-archive-this`
 - [x] From the release page: 
     - Download the latest release
     - Unzip `archive-this.zip` in `.obsidian/plugins/` path
