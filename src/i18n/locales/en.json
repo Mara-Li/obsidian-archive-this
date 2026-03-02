@@ -1,1 +1,9 @@
-{}
+{
+  "cmd": {
+    "restore": "Restore from archive",
+    "archive": "Archive",
+    "archiveAll": "Archive all",
+    "restoreAll": "Restore all",
+    "swap": "Archive/restore"
+  }
+}

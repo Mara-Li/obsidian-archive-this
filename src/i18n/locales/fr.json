@@ -1,0 +1,7 @@
+{
+  "cmd": {
+    "archive": "Archive",
+    "archiveAll": "Archiver tout",
+    "swap": "Archiver/restaurer"
+  }
+}

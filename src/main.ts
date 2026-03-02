@@ -27,14 +27,14 @@ export default class ArchiveThis extends Plugin {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive")
-							.setTitle("Move to archive")
+							.setTitle(i18next.t("cmd.archive"))
 							.onClick(async () => this.moveToArchive(file));
 					});
 				} else {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive-restore")
-							.setTitle("Restore from archive")
+							.setTitle(i18next.t("cmd.restore"))
 							.onClick(async () => this.restoreFromArchive(file));
 					});
 				}
@@ -48,14 +48,14 @@ export default class ArchiveThis extends Plugin {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive")
-							.setTitle("Move all to archive")
+							.setTitle(i18next.t("cmd.archiveAll"))
 							.onClick(async () => this.moveTheyInArchive(files));
 					});
 				} else if (this.areAllTheyInArchive(files)) {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive-restore")
-							.setTitle("Restore from archive")
+							.setTitle(i18next.t("cmd.restoreAll"))
 							.onClick(async () => this.restoreTheyFromArchive(files));
 					});
 				} else {
@@ -63,7 +63,7 @@ export default class ArchiveThis extends Plugin {
 					menu.addItem((item) => {
 						item
 							.setIcon("package")
-							.setTitle("Move in/out from archive")
+							.setTitle(i18next.t("cmd.swap"))
 							.onClick(async () => this.swapFile(files));
 					});
 				}
