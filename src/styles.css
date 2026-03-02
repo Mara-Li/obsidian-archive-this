@@ -1,0 +1,11 @@
+.archive-this.error {
+	background-color: rgba(var(--background-modifier-error-rgb), 0.8);
+}
+
+.archive-this.success {
+	background-color: rgba(var(--background-modifier-success-rgb), 0.8);
+}
+
+.archive-this.warning {
+	background-color: rgba(var(--color-orange-rgb), 0.8);
+}

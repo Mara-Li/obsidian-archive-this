@@ -1,24 +1,58 @@
 {
-  "cmd": {
-    "archive": "Archive",
-    "archiveAll": "Archiver tout",
-    "swap": "Archiver/restaurer",
-    "restore": "Restaurer",
-    "restoreAll": "Tous restaurer"
-  },
-  "settings": {
-    "empty": {
-      "inArchive": {
-        "desc": "Quand le(s) fichier(s) ou dossier(s) sont déplacés hors de l'archive, supprime le dossier s'il est vide. Note : Le dossier d'Archive ne sera pas supprimé, même si vide.",
-        "title": "Dans l'archive"
-      },
-      "inSource": {
-        "desc": "Quand le(s) fichier(s) ou dossier(s) sont archivés, supprime le dossier parent s'il est vide.",
-        "title": "Dans la source"
-      },
-      "title": "Supprimer le dossier quand vide"
-    },
-    "folder": "Dossier d'archive",
-    "folderPlaceholder": "Archives"
-  }
+	"archive": {
+		"error": {
+			"all_one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'information.",
+			"all_other": "Échec de l'archivage de {{- count}} fichiers. Consulter la console pour plus d'informations.",
+			"one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'informations."
+		},
+		"success": {
+			"all_one": "Le fichier {{- file}} a été archivé avec succès.",
+			"all_other": "{{- count}} fichiers archivés avec succès.",
+			"one": "{{- file}} archivé avec succès."
+		}
+	},
+	"cmd": {
+		"archive": "Archive",
+		"archiveAll": "Archiver tout",
+		"restore": "Restaurer",
+		"restoreAll": "Tous restaurer",
+		"swap": "Archiver/restaurer"
+	},
+	"new": "nouveau dossier",
+	"restore": {
+		"error": {
+			"all_one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations.",
+			"one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations."
+		},
+		"success": {
+			"all_one": "Restauration réussie de {{- file}}.",
+			"all_other": "{{- count}} fichiers ont été restauré correctement.",
+			"one": "Restauration réussie de {{- file}}."
+		}
+	},
+	"settings": {
+		"empty": {
+			"inArchive": {
+				"desc": "Quand le(s) fichier(s) ou dossier(s) sont déplacés hors de l'archive, supprime le dossier s'il est vide. Note : Le dossier d'Archive ne sera pas supprimé, même si vide.",
+				"title": "Dans l'archive"
+			},
+			"inSource": {
+				"desc": "Quand le(s) fichier(s) ou dossier(s) sont archivés, supprime le dossier parent s'il est vide.",
+				"title": "Dans la source"
+			},
+			"title": "Supprimer le dossier quand vide"
+		},
+		"folder": "Dossier d'archive",
+		"folderPlaceholder": "Archives"
+	},
+	"swap": {
+		"error": {
+			"all_one": "Échec du déplacement de {{- file}}. Vérifier la console pour plus d'information.",
+			"all_other": "Échec du déplacement de {{- count}} fichiers. Vérifier la console pour plus d'informations."
+		},
+		"success": {
+			"all_one": "Le fichier {{- file}} a été déplacé avec succès.",
+			"all_other": "{{- count}} fichier ont été déplacé avec succès."
+		}
+	}
 }

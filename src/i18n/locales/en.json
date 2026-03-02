@@ -1,24 +1,58 @@
 {
-  "cmd": {
-    "restore": "Restore",
-    "archive": "Archive",
-    "archiveAll": "Archive all",
-    "restoreAll": "Restore all",
-    "swap": "Archive/restore"
-  },
-  "settings": {
-    "folder": "Archive folder",
-    "folderPlaceholder": "Archives",
-    "empty": {
-      "title": "Delete folder when empty",
-      "inSource": {
-        "title": "In source",
-        "desc": "When archiving file(s) or folder(s), delete the parent folder when it is empty."
-      },
-      "inArchive": {
-        "title": "In archive",
-        "desc": "When moving file(s) or folder(s) out of archive, delete the folder when it is empty. Note: The archive folder won't be deleted even if empty."
-      }
-    }
-  }
+	"archive": {
+		"error": {
+			"all_one": "Failed to archive {{- file}}. Check the console for more informations.",
+			"all_other": "Failed to archive {{- count}} files. Check the console for more informations.",
+			"one": "Failed to archive {{- file}}. Check console for more informations."
+		},
+		"success": {
+			"all_one": "{{- file}} was archived successfully.",
+			"all_other": "{{- count}} files archived successfully.",
+			"one": "Successfully archived {{- file}}."
+		}
+	},
+	"cmd": {
+		"archive": "Archive",
+		"archiveAll": "Archive all",
+		"restore": "Restore",
+		"restoreAll": "Restore all",
+		"swap": "Archive/restore"
+	},
+	"new": "new folder",
+	"restore": {
+		"error": {
+			"all_one": "Failed to restore {{- file}}. Check console for more informations.",
+			"one": "Failed to restore {{- file}}. Check the console for more informations."
+		},
+		"success": {
+			"all_one": "Successfully restored {{- file}}.",
+			"all_other": "{{- count}} files were restored successfully.",
+			"one": "Successfully restored {{- file}}."
+		}
+	},
+	"settings": {
+		"empty": {
+			"inArchive": {
+				"desc": "When moving file(s) or folder(s) out of archive, delete the folder when it is empty. Note: The archive folder won't be deleted even if empty.",
+				"title": "In archive"
+			},
+			"inSource": {
+				"desc": "When archiving file(s) or folder(s), delete the parent folder when it is empty.",
+				"title": "In source"
+			},
+			"title": "Delete folder when empty"
+		},
+		"folder": "Archive folder",
+		"folderPlaceholder": "Archives"
+	},
+	"swap": {
+		"error": {
+			"all_one": "Failed to move {{- file}}. Check the console for more informations.",
+			"all_other": "Failed to move {{- count}} files. Check the console for more informations."
+		},
+		"success": {
+			"all_one": "{{- file}} was moved successfully.",
+			"all_other": "{{- count}} files were moved sucessfully."
+		}
+	}
 }

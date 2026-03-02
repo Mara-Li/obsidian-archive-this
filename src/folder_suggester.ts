@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import { AbstractInputSuggest, type App, type TFolder } from "obsidian";
 
 export class FolderSuggester extends AbstractInputSuggest<string> {
@@ -14,12 +15,14 @@ export class FolderSuggester extends AbstractInputSuggest<string> {
 	}
 
 	getSuggestions(query: string): string[] {
-		return this.app.vault
+		const res = this.app.vault
 			.getAllFolders()
 			.filter((folder: TFolder) => {
 				return folder.path.toLowerCase().contains(query.toLowerCase());
 			})
 			.map((folder: TFolder) => folder.path);
+		if (res.length === 0) return [`${query} (${i18next.t("new")})`];
+		return res;
 	}
 
 	selectSuggestion(value: string, _evt: MouseEvent | KeyboardEvent): void {

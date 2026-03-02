@@ -1,15 +1,42 @@
 import i18next from "i18next";
-import { normalizePath, Plugin, type TAbstractFile, type TFolder } from "obsidian";
+import {
+	Notice,
+	normalizePath,
+	Plugin,
+	type TAbstractFile,
+	type TFile,
+	TFolder,
+} from "obsidian";
 import { resources, translationLanguage } from "./i18n";
 import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
 import { ArchiveThisSettingTab } from "./settings";
 
 export default class ArchiveThis extends Plugin {
 	settings!: ArchiveThisSettings;
+
+	noticeError(message: string) {
+		const notice = new Notice(message, 0);
+		notice.containerEl.addClasses(["archive-this", "error"]);
+	}
+
+	noticeSuccess(message: string) {
+		const notice = new Notice(message, 0);
+		notice.containerEl.addClasses(["archive-this", "success"]);
+	}
+
+	noticeWarning(message: string) {
+		const notice = new Notice(message, 0);
+		notice.containerEl.addClasses(["archive-this", "warning"]);
+	}
+
+	getBasename(file: TAbstractFile) {
+		if (file instanceof TFolder) return file.name;
+		return (file as TFile).basename;
+	}
+
 	async onload() {
 		console.log(`[${this.manifest.name}] Loaded`);
 		await this.loadSettings();
-
 		//load i18next
 		await i18next.init({
 			lng: translationLanguage,
@@ -23,19 +50,40 @@ export default class ArchiveThis extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file) => {
+				if (!this.settings.archiveFolder.length) return; //if no archive folder, do not add the menu
 				if (!this.isInArchive(file)) {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive")
 							.setTitle(i18next.t("cmd.archive"))
-							.onClick(async () => this.moveToArchive(file));
+							.onClick(async () => {
+								const success = await this.moveToArchive(file);
+								if (!success)
+									this.noticeError(
+										i18next.t("archive.error.one", { file: this.getBasename(file) })
+									);
+								else
+									this.noticeSuccess(
+										i18next.t("archive.success.one", { file: this.getBasename(file) })
+									);
+							});
 					});
 				} else {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive-restore")
 							.setTitle(i18next.t("cmd.restore"))
-							.onClick(async () => this.restoreFromArchive(file));
+							.onClick(async () => {
+								const res = await this.restoreFromArchive(file);
+								if (!res)
+									this.noticeError(
+										i18next.t("restore.error.one", { file: this.getBasename(file) })
+									);
+								else
+									this.noticeSuccess(
+										i18next.t("restore.success.one", { file: this.getBasename(file) })
+									);
+							});
 					});
 				}
 			})
@@ -43,20 +91,27 @@ export default class ArchiveThis extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("files-menu", (menu, files) => {
+				if (!this.settings.archiveFolder.length) return; //if no archive folder, do not add the menu
 				const areAllTheyNotInArchive = this.areAllTheyNotInArchive(files);
 				if (areAllTheyNotInArchive) {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive")
 							.setTitle(i18next.t("cmd.archiveAll"))
-							.onClick(async () => this.moveTheyInArchive(files));
+							.onClick(async () => {
+								const res = await this.moveTheyInArchive(files);
+								this.archiveCheck(files, res);
+							});
 					});
 				} else if (this.areAllTheyInArchive(files)) {
 					menu.addItem((item) => {
 						item
 							.setIcon("archive-restore")
 							.setTitle(i18next.t("cmd.restoreAll"))
-							.onClick(async () => this.restoreTheyFromArchive(files));
+							.onClick(async () => {
+								const res = await this.restoreTheyFromArchive(files);
+								this.restoreCheck(files, res);
+							});
 					});
 				} else {
 					//some are in and some are out
@@ -64,11 +119,53 @@ export default class ArchiveThis extends Plugin {
 						item
 							.setIcon("package")
 							.setTitle(i18next.t("cmd.swap"))
-							.onClick(async () => this.swapFile(files));
+							.onClick(async () => await this.swapFile(files));
 					});
 				}
 			})
 		);
+	}
+
+	archiveCheck(files: TAbstractFile[], res: boolean[]) {
+		const file = files.map((f) => this.getBasename(f)).join(", ");
+		if (res.every((r) => r))
+			this.noticeSuccess(
+				i18next.t("archive.success.all", {
+					count: files.length,
+					file,
+				})
+			);
+		else if (res.every((r) => !r))
+			this.noticeError(
+				i18next.t("archive.error.all", {
+					count: files.length,
+					file,
+				})
+			);
+		else {
+			const nbInError = res.filter((r) => !r).length;
+			const nbInSuccess = res.filter((r) => r).length;
+			const msg = `${i18next.t("archive.success.all", { count: nbInSuccess, file })}\n${i18next.t("archive.error.all", { count: nbInError, file })}`;
+			this.noticeWarning(msg);
+		}
+	}
+
+	restoreCheck(files: TAbstractFile[], res: boolean[]) {
+		if (res.every((r) => r))
+			this.noticeSuccess(
+				i18next.t("restore.success.all", {
+					count: files.length,
+					file: files.map((f) => this.getBasename(f)).join(", "),
+				})
+			);
+		else if (res.every((r) => !r))
+			this.noticeError(i18next.t("restore.error.all", { count: files.length }));
+		else {
+			const nbInError = res.filter((r) => !r).length;
+			const nbInSuccess = res.filter((r) => r).length;
+			const msg = `${i18next.t("restore.success.all", { count: nbInSuccess })}\n${i18next.t("restore.error.all", { count: nbInError })}`;
+			this.noticeWarning(msg);
+		}
 	}
 
 	/**
@@ -82,6 +179,30 @@ export default class ArchiveThis extends Plugin {
 				else return this.moveToArchive(file);
 			})
 		);
+	}
+
+	async checkSwapFile(files: TAbstractFile[], res: boolean[]) {
+		const file = files.map((f) => this.getBasename(f)).join(", ");
+		const nbInError = res.filter((r) => !r).length;
+		const nbInSuccess = res.filter((r) => r).length;
+		if (nbInError === 0)
+			this.noticeSuccess(
+				i18next.t("swap.success.all", {
+					count: files.length,
+					file,
+				})
+			);
+		else if (nbInSuccess === 0)
+			this.noticeError(
+				i18next.t("swap.error.all", {
+					count: files.length,
+					file,
+				})
+			);
+		else {
+			const msg = `${i18next.t("swap.success.all", { count: nbInSuccess, file })}\n${i18next.t("swap.error.all", { count: nbInError, file })}`;
+			this.noticeWarning(msg);
+		}
 	}
 
 	/**
@@ -183,7 +304,7 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(file: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
-		if (await this.app.vault.exists(dirName, false)) {
+		if (await this.app.vault.exists(dirName)) {
 			await this.app.fileManager.renameFile(file, newPath);
 		} else {
 			await this.app.vault.createFolder(dirName);
