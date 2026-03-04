@@ -49,5 +49,10 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 			);
+
+		new Setting(containerEl)
+			.setHeading()
+			.setName(i18next.t("settings.overridePaths.title"))
+			.setDesc(i18next.t("settings.overridePaths.desc"));
 	}
 }

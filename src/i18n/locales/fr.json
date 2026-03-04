@@ -43,7 +43,11 @@
 			"title": "Supprimer le dossier quand vide"
 		},
 		"folder": "Dossier d'archive",
-		"folderPlaceholder": "Archives"
+		"folderPlaceholder": "Archives",
+		"overridePaths": {
+			"desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
+			"title": "Remplacer le chemin"
+		}
 	},
 	"swap": {
 		"error": {
