@@ -43,7 +43,11 @@
 			"title": "Delete folder when empty"
 		},
 		"folder": "Archive folder",
-		"folderPlaceholder": "Archives"
+		"folderPlaceholder": "Archives",
+		"overridePaths": {
+			"desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
+			"title": "Override path"
+		}
 	},
 	"swap": {
 		"error": {
