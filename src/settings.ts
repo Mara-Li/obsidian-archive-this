@@ -70,7 +70,10 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		 
 		L'utilisation des regex est totalement possible (ainsi que les remplacement via \`$1\` par exemple) en activant le toggle regex.
 		
-		A noter que les transformations sont faites dans l'ordre de la liste.`
+		A noter que les transformations sont faites dans l'ordre de la liste.
+		
+		> [!warning]
+		> Ces remplacements ne fonctionnent que sur les fichiers, puisque seulement ces derniers peuvent avoir des métadonnées.`
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
 		component.unload();
 
