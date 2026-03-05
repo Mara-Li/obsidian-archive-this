@@ -55,7 +55,7 @@ function sourceToReplacement(
 		const sourceRegex = new RegExp(path.sourcePath, "g");
 		return sourcePath.replace(sourceRegex, replacePath);
 	}
-	return sourcePath.replace(path.sourcePath, replacePath);
+	return sourcePath.replaceAll(path.sourcePath, replacePath);
 }
 
 /**

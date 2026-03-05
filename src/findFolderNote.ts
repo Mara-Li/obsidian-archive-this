@@ -1,4 +1,4 @@
-import { type App, type TAbstractFile, TFile, TFolder } from "obsidian";
+import { type App, TFile, TFolder } from "obsidian";
 import { getFrontmatterData } from "./frontmatterData";
 import type { ArchiveThisSettings } from "./interfaces";
 import { replacePath } from "./replacePath";
@@ -23,9 +23,8 @@ export function getFolderNote(
 
 function getFolderNoteInside(folder: TFolder, nameToFind?: string): TFile | null {
 	if (folder.children.length === 0) return null; //no folder note
-	console.log(folder.children.map((child) => child.name));
 	const folderNote = folder.children.find(
-		(child) => child instanceof TFile && child.basename === (nameToFind ?? child.name)
+		(child) => child instanceof TFile && child.basename === (nameToFind ?? folder.name)
 	);
 	return folderNote instanceof TFile ? folderNote : null;
 }
@@ -52,7 +51,7 @@ function getNamedFolderNote(
 
 export async function renameFoldernote(
 	newPath: string,
-	oldFile: TAbstractFile,
+	oldPath: string,
 	app: App,
 	settings: ArchiveThisSettings,
 	restore?: boolean
@@ -60,7 +59,9 @@ export async function renameFoldernote(
 	const newTFile = app.vault.getAbstractFileByPath(newPath);
 	if (newTFile instanceof TFolder) {
 		//get the foldernote in the new folder
-		const nameToFind = oldFile instanceof TFile ? oldFile.basename : oldFile.name;
+		const nameToFind = oldPath.split("/").pop();
+		if (!nameToFind) return;
+		console.log("In renameFoldernote, nameToFind:", nameToFind);
 		const folderNote = getFolderNote(newTFile, settings, nameToFind);
 		if (!folderNote) return;
 		if (restore) {
@@ -75,7 +76,6 @@ export async function renameFoldernote(
 				settings.overridePaths,
 				getFrontmatterData(app, folderNote)
 			);
-			console.warn("newPathF", newPathF);
 			if (newPathF === folderNote.path) return; //no change, so we skip the rename to avoid errors
 			await app.fileManager.renameFile(folderNote, newPathF);
 		}
