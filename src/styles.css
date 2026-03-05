@@ -9,3 +9,11 @@
 .archive-this.warning {
 	background-color: rgba(var(--color-orange-rgb), 0.8);
 }
+
+.archive-this .md-info {
+	background-color: transparent;
+}
+
+.archive-this .width-100 {
+	width: 100%;
+}
