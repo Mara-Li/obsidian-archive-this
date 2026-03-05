@@ -271,6 +271,7 @@ export default class ArchiveThis extends Plugin {
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const newPath = this.getRestorePath(file);
+		console.log("New path:", newPath);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
@@ -295,7 +296,8 @@ export default class ArchiveThis extends Plugin {
 		const lastSlashIdx = path.lastIndexOf("/");
 		if (lastSlashIdx === -1) {
 			// no slashes found
-			throw new Error("DirectoryNotFound");
+			//root
+			return this.app.vault.getRoot().path;
 		}
 		return normalizePath(path.slice(0, lastSlashIdx));
 	}
@@ -308,9 +310,11 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
+		console.log("Restoration: new path", newPath, "dirName", dirName);
 
 		// Handle existing destination
 		if (await this.app.vault.exists(newPath)) {
+			console.warn("! Destination already exists:", newPath);
 			const newPathTF = this.app.vault.getAbstractFileByPath(newPath);
 
 			// File → File: overwrite by deleting the old one
@@ -319,6 +323,7 @@ export default class ArchiveThis extends Plugin {
 			}
 			// Folder → Folder: merge recursively
 			else if (newPathTF instanceof TFolder && source instanceof TFolder) {
+				console.warn("Merging folders:", source.path, "→", newPath);
 				await this.mergeFolders(source, newPathTF);
 				return; // Exit early since merge handles everything
 			}
@@ -379,7 +384,7 @@ export default class ArchiveThis extends Plugin {
 
 	getRestorePath(file: TAbstractFile): string {
 		const defaultPath = normalizePath(
-			file.path.replace(normalizePath(this.settings.archiveFolder), "").trim()
+			file.path.replace(this.settings.archiveFolder, "").trim()
 		);
 		if (!this.settings.overridePaths.length) return defaultPath;
 		const fm = getOriginalPathForRestore(file, this.app, this.settings);

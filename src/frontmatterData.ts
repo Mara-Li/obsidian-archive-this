@@ -47,17 +47,20 @@ export function getFrontmatterForArchive(
  * @param {App} app Obsidian
  * @param {ArchiveThisSettings} settings plugin settings
  */
-export function setOriginalPath(
+export async function setOriginalPath(
 	sourceFile: TAbstractFile,
 	app: App,
 	settings: ArchiveThisSettings
 ) {
 	const frontmatterKey = settings.originalPathFrontmatterKey;
-	if (sourceFile instanceof TFile)
-		return setOriginalPathInFm(app, sourceFile, frontmatterKey);
+	if (sourceFile instanceof TFile) {
+		await setOriginalPathInFm(app, sourceFile, frontmatterKey);
+		return;
+	}
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
+	console.log("folderNote", folderNote?.name);
 	if (!folderNote) return; //no folder note, so we can't set the fm
-	return setOriginalPathInFm(app, folderNote, frontmatterKey);
+	await setOriginalPathInFm(app, folderNote, frontmatterKey);
 }
 
 /**
@@ -71,19 +74,18 @@ export function getOriginalPathForRestore(
 	sourceFile: TAbstractFile,
 	app: App,
 	settings: ArchiveThisSettings
-): string | null {
+): string | undefined {
 	const pathFrontmatterKey = settings.originalPathFrontmatterKey;
 	if (!pathFrontmatterKey.length) throw new Error("Frontmatter key is empty");
 	if (sourceFile instanceof TFile) {
 		const fm = getFrontmatterData(app, sourceFile);
 		//if no fm set => return the path of the file
-		return fm?.[pathFrontmatterKey] ?? sourceFile.path;
+		return fm?.[pathFrontmatterKey];
 	}
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
-	if (!folderNote) return sourceFile.path;
+	if (!folderNote) return;
 	const fm = getFrontmatterData(app, folderNote);
-	const key = frontmatterKey(fm?.[pathFrontmatterKey]);
-	return key ?? sourceFile.path;
+	return frontmatterKey(fm?.[pathFrontmatterKey]);
 }
 
 /**
