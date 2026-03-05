@@ -310,9 +310,6 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
-		console.log("Moving", source.path, "to", newPath);
-		console.log("DirName:", dirName);
-
 		// Handle existing destination
 		if (await this.app.vault.exists(newPath)) {
 			const newPathTF = this.app.vault.getAbstractFileByPath(newPath);

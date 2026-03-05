@@ -53,14 +53,12 @@ export async function setOriginalPath(
 	app: App,
 	settings: ArchiveThisSettings
 ) {
-	console.log("Source path in setOriginalPath", sourceFile.path);
 	const frontmatterKey = settings.originalPathFrontmatterKey;
 	if (sourceFile instanceof TFile) {
 		await setOriginalPathInFm(app, sourceFile, frontmatterKey);
 		return;
 	}
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
-	console.log("folderNote", folderNote?.name);
 	if (!folderNote) return; //no folder note, so we can't set the fm
 	await setOriginalPathInFm(app, folderNote, frontmatterKey);
 }
