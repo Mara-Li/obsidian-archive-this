@@ -264,6 +264,30 @@ export default class ArchiveThis extends Plugin {
 	}
 
 	/**
+	 * Restore the outside folder note from the archive before moving the folder itself
+	 * @param folder {TFolder} The folder being restored
+	 * @param newFolderPath {string} The new path where the folder will be moved
+	 */
+	private async restoreOutsideFolderNote(folder: TFolder, newFolderPath: string) {
+		const parentFolder = folder.parent;
+		if (!parentFolder) return;
+
+		// Find the folder note outside the folder (in the archive parent directory)
+		const folderNote = parentFolder.children.find(
+			(child) => child instanceof TFile && child.basename === folder.name
+		);
+
+		if (!folderNote || !(folderNote instanceof TFile)) return;
+
+		// Calculate the new path for the folder note
+		// If the folder goes to "path/folder", the note goes to "path/folder.md"
+		const newFolderNotePath = `${newFolderPath}.${folderNote.extension}`;
+
+		// Move the folder note
+		await this.moveFileAndCreateFolder(folderNote, newFolderNotePath);
+	}
+
+	/**
 	 * @credit [gOATiful](https://github.com/gOATiful/para-shortcuts)
 	 * @source [para-shortcuts/restoreFromArchive](https://github.com/gOATiful/para-shortcuts/blob/6da18dd1da9fa6ceec5e8aa9a844510d355b72f5/src/main.ts#L148)
 	 * @param file
@@ -274,6 +298,15 @@ export default class ArchiveThis extends Plugin {
 		const oldPath = file.path;
 		const newPath = this.getRestorePath(file);
 		try {
+			// Handle outside folder note before moving the folder
+			if (
+				file instanceof TFolder &&
+				this.settings.useFolderNote.enable &&
+				this.settings.useFolderNote.mode === "outside"
+			) {
+				await this.restoreOutsideFolderNote(file, newPath);
+			}
+
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
 			if (this.settings.overridePaths.length)
@@ -359,6 +392,30 @@ export default class ArchiveThis extends Plugin {
 		}
 	}
 
+	/**
+	 * Move the outside folder note to the archive before moving the folder itself
+	 * @param folder {TFolder} The folder being archived
+	 * @param newFolderPath {string} The new path where the folder will be moved
+	 */
+	private async moveOutsideFolderNote(folder: TFolder, newFolderPath: string) {
+		const parentFolder = folder.parent;
+		if (!parentFolder) return;
+
+		// Find the folder note outside the folder (in the parent directory)
+		const folderNote = parentFolder.children.find(
+			(child) => child instanceof TFile && child.basename === folder.name
+		);
+
+		if (!folderNote || !(folderNote instanceof TFile)) return;
+
+		// Calculate the new path for the folder note
+		// If the folder goes to "archive/path/folder", the note goes to "archive/path/folder.md"
+		const newFolderNotePath = `${newFolderPath}.${folderNote.extension}`;
+
+		// Move the folder note
+		await this.moveFileAndCreateFolder(folderNote, newFolderNotePath);
+	}
+
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const oldPath = file.path;
@@ -366,6 +423,16 @@ export default class ArchiveThis extends Plugin {
 		try {
 			if (this.settings.overridePaths.length)
 				await setOriginalPath(file, this.app, this.settings);
+
+			// Handle outside folder note before moving the folder
+			if (
+				file instanceof TFolder &&
+				this.settings.useFolderNote.enable &&
+				this.settings.useFolderNote.mode === "outside"
+			) {
+				await this.moveOutsideFolderNote(file, newPath);
+			}
+
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
 			if (this.settings.overridePaths.length)
