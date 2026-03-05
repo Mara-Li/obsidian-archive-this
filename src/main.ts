@@ -264,9 +264,7 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
-		const newPath = normalizePath(
-			file.path.replace(normalizePath(this.settings.archiveFolder), "").trim()
-		);
+		const newPath = this.getRestorationDefaultPath(file);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
@@ -314,8 +312,7 @@ export default class ArchiveThis extends Plugin {
 
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
-		const rootArchive = normalizePath(this.settings.archiveFolder);
-		const newPath = normalizePath(`${rootArchive}/${file.path}`);
+		const newPath = this.getArchiveDefaultPath(file);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
@@ -324,6 +321,17 @@ export default class ArchiveThis extends Plugin {
 			console.warn(e);
 			return false; //failed
 		}
+	}
+
+	getArchiveDefaultPath(file: TAbstractFile): string {
+		const rootArchive = normalizePath(this.settings.archiveFolder);
+		return normalizePath(`${rootArchive}/${file.path}`);
+	}
+
+	getRestorationDefaultPath(file: TAbstractFile): string {
+		return normalizePath(
+			file.path.replace(normalizePath(this.settings.archiveFolder), "").trim()
+		);
 	}
 
 	async saveSettings() {
