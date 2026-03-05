@@ -1,16 +1,19 @@
-import { TFile, type TFolder } from "obsidian";
+import { type App, type TAbstractFile, TFile, TFolder } from "obsidian";
+import { getFrontmatterData } from "./frontmatterData";
 import type { ArchiveThisSettings } from "./interfaces";
+import { replacePath } from "./replacePath";
 
 export function getFolderNote(
 	folder: TFolder,
-	settings: ArchiveThisSettings
+	settings: ArchiveThisSettings,
+	nameToFind?: string
 ): TFile | null {
 	if (!settings.useFolderNote.enable) return null;
 	switch (settings.useFolderNote.mode) {
 		case "inside":
-			return getFolderNoteInside(folder);
+			return getFolderNoteInside(folder, nameToFind);
 		case "outside":
-			return getFolderNoteOutside(folder);
+			return getFolderNoteOutside(folder, nameToFind);
 		case "named":
 			return getNamedFolderNote(folder, settings);
 		default:
@@ -18,20 +21,20 @@ export function getFolderNote(
 	}
 }
 
-function getFolderNoteInside(folder: TFolder): TFile | null {
+function getFolderNoteInside(folder: TFolder, nameToFind?: string): TFile | null {
 	if (folder.children.length === 0) return null; //no folder note
 	console.log(folder.children.map((child) => child.name));
 	const folderNote = folder.children.find(
-		(child) => child instanceof TFile && child.basename === folder.name
+		(child) => child instanceof TFile && child.basename === (nameToFind ?? child.name)
 	);
 	return folderNote instanceof TFile ? folderNote : null;
 }
 
-function getFolderNoteOutside(folder: TFolder): TFile | null {
+function getFolderNoteOutside(folder: TFolder, nameToFind?: string): TFile | null {
 	const parentFolder = folder.parent;
 	if (!parentFolder) return null; //no parent, so no outside folder note
 	const folderNote = parentFolder.children.find(
-		(child) => child instanceof TFile && child.name === `${folder.name}.md`
+		(child) => child instanceof TFile && child.basename === (nameToFind ?? folder.name)
 	);
 	return folderNote instanceof TFile ? folderNote : null;
 }
@@ -45,4 +48,36 @@ function getNamedFolderNote(
 		(child) => child instanceof TFile && child.name === settings.useFolderNote.name
 	);
 	return folderNote instanceof TFile ? folderNote : null;
+}
+
+export async function renameFoldernote(
+	newPath: string,
+	oldFile: TAbstractFile,
+	app: App,
+	settings: ArchiveThisSettings,
+	restore?: boolean
+) {
+	const newTFile = app.vault.getAbstractFileByPath(newPath);
+	if (newTFile instanceof TFolder) {
+		//get the foldernote in the new folder
+		const nameToFind = oldFile instanceof TFile ? oldFile.basename : oldFile.name;
+		const folderNote = getFolderNote(newTFile, settings, nameToFind);
+		if (!folderNote) return;
+		if (restore) {
+			if (["inside", "outside"].includes(settings.useFolderNote.mode)) {
+				const newPathF = `${newTFile.path.replace(folderNote.name, "")}/${newTFile.name}.${folderNote.extension}`;
+				await app.fileManager.renameFile(folderNote, newPathF);
+			}
+		} else {
+			//archiving
+			const newPathF = replacePath(
+				folderNote.path,
+				settings.overridePaths,
+				getFrontmatterData(app, folderNote)
+			);
+			console.warn("newPathF", newPathF);
+			if (newPathF === folderNote.path) return; //no change, so we skip the rename to avoid errors
+			await app.fileManager.renameFile(folderNote, newPathF);
+		}
+	}
 }
