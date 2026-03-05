@@ -76,7 +76,10 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		
 		L'utilisation des regex est totalement possible (ainsi que les remplacement via \`$1\` par exemple) en activant le toggle regex.
 		
-		A noter que les transformations sont faites dans l'ordre de la liste.`;
+		A noter que les transformations sont faites dans l'ordre de la liste.
+		
+		Il est possible d'utiliser les clés spéciales \`{{ctime}}\`, \`{{mtime}}\` et \`{{size}}\` qui se basent sur les stats du fichier/folder note source. Le format de ces clés est en ISO, mais il est possible de les formater via le champ "Date format" plus bas.
+		`;
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
 		component.unload();
 
@@ -147,6 +150,30 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					);
 			}
 		}
+
+		new Setting(containerEl)
+			.setName("Date format")
+			.setDesc(
+				"Vous pouvez, parfois, utiliser des dates dans les chemins, que ce soit via l'utilisation des clés spéciales comme ctime, mtime ou via une propriété. Utilisez le format moment ici pour définir le format résultat en chemin. Par défaut YYYY-MM-DD."
+			);
+		new Setting(containerEl).setName("Input format").addText((text) =>
+			text
+				.setValue(this.settings.date.input)
+				.setPlaceholder("YYYY-MM-DD")
+				.onChange(async (val) => {
+					this.settings.date.input = val.trim();
+					await this.plugin.saveSettings();
+				})
+		);
+		new Setting(containerEl).setName("Output format").addText((text) =>
+			text
+				.setValue(this.settings.date.output)
+				.setPlaceholder("YYYY-MM-DD")
+				.onChange(async (val) => {
+					this.settings.date.output = val.trim();
+					await this.plugin.saveSettings();
+				})
+		);
 
 		//add button plus
 		new Setting(containerEl).addButton((btn) =>

@@ -73,7 +73,9 @@ export async function renameFolderNote(
 			const newPathF = replacePath(
 				folderNote.path,
 				settings.overridePaths,
-				getFrontmatterData(app, folderNote)
+				folderNote.stat,
+				getFrontmatterData(app, folderNote),
+				settings.date
 			);
 			if (newPathF === folderNote.path) return; //no change, so we skip the rename to avoid errors
 			await app.fileManager.renameFile(folderNote, newPathF);

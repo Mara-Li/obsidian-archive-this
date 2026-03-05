@@ -450,7 +450,14 @@ export default class ArchiveThis extends Plugin {
 		const defaultPath = normalizePath(`${rootArchive}/${file.path}`);
 		if (!this.settings.overridePaths.length) return defaultPath;
 		const fm = getFrontmatterForArchive(file, this.app, this.settings);
-		return replacePath(defaultPath, this.settings.overridePaths, fm);
+		const stats = file instanceof TFile ? file.stat : undefined;
+		return replacePath(
+			defaultPath,
+			this.settings.overridePaths,
+			stats,
+			fm,
+			this.settings.date
+		);
 	}
 
 	private getRestorePath(file: TAbstractFile): string {
