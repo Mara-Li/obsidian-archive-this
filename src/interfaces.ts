@@ -10,19 +10,19 @@ export interface ArchiveThisSettings {
 	 * Allow to use the folder note when the archived file is a TFolder (it will get the frontmatter and add/use the original_path key)
 	 */
 	useFolderNote: {
-		enable: boolean,
+		enable: boolean;
 		/**
 		 * Type of the folder note used:
 		 * - **Inside**: Will use the same name of the parent folder : `Folder/Folder.md`
 		 * - **Outside**: Will use the same name of the folder but outside, in the parent: Folder is `parent/folder` and folderNote: `parent/folder.md`
 		 * - **Named**: Inside of the folder that should have the folder note, but with another name than the folder: `Folder/index.md`
 		 */
-		mode: "inside" | "outside" | "named",
+		mode: "inside" | "outside" | "named";
 		/**
 		 * Name used in the named note mode (should have the extension of the file, ex: `index.md` or `folder_note.md`)
 		 */
 		name: string;
-	}
+	};
 }
 
 export type OverridePath = {
@@ -43,5 +43,5 @@ export const DEFAULT_SETTINGS: ArchiveThisSettings = {
 		enable: false,
 		mode: "inside",
 		name: "index.md",
-	}
+	},
 };

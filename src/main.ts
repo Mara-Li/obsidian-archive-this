@@ -302,11 +302,11 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
-		
+
 		// Handle existing destination
 		if (await this.app.vault.exists(newPath)) {
 			const newPathTF = this.app.vault.getAbstractFileByPath(newPath);
-			
+
 			// File → File: overwrite by deleting the old one
 			if (newPathTF instanceof TFile && source instanceof TFile) {
 				await this.app.fileManager.trashFile(newPathTF);
@@ -317,12 +317,12 @@ export default class ArchiveThis extends Plugin {
 				return; // Exit early since merge handles everything
 			}
 		}
-		
+
 		// Ensure parent directory exists
 		if (!(await this.app.vault.exists(dirName))) {
 			await this.app.vault.createFolder(dirName);
 		}
-		
+
 		// Move the file/folder
 		await this.app.fileManager.renameFile(source, newPath);
 	}
