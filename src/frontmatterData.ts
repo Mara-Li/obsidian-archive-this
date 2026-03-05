@@ -72,15 +72,29 @@ export function getOriginalPathForRestore(
 	app: App,
 	settings: ArchiveThisSettings
 ): string | null {
-	const frontmatterKey = settings.originalPathFrontmatterKey;
-	if (!frontmatterKey.length) throw new Error("Frontmatter key is empty");
+	const pathFrontmatterKey = settings.originalPathFrontmatterKey;
+	if (!pathFrontmatterKey.length) throw new Error("Frontmatter key is empty");
 	if (sourceFile instanceof TFile) {
 		const fm = getFrontmatterData(app, sourceFile);
 		//if no fm set => return the path of the file
-		return fm?.[frontmatterKey] ?? sourceFile.path;
+		return fm?.[pathFrontmatterKey] ?? sourceFile.path;
 	}
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
 	if (!folderNote) return sourceFile.path;
 	const fm = getFrontmatterData(app, folderNote);
-	return fm?.[frontmatterKey] ?? sourceFile.path;
+	const key = frontmatterKey(fm?.[pathFrontmatterKey]);
+	return key ?? sourceFile.path;
+}
+
+/**
+ * We should only use the frontmatter key if is is a stringify value
+ * @param frontmatterKey
+ */
+export function frontmatterKey(frontmatterKey: unknown) {
+	if (frontmatterKey == null) return undefined;
+	if (typeof frontmatterKey === "string")
+		return frontmatterKey.length ? frontmatterKey : undefined;
+	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
+	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
+	return undefined;
 }

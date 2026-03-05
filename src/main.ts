@@ -7,8 +7,14 @@ import {
 	TFile,
 	TFolder,
 } from "obsidian";
+import {
+	getFrontmatterForArchive,
+	getOriginalPathForRestore,
+	setOriginalPath,
+} from "./frontmatterData";
 import { resources, translationLanguage } from "./i18n";
 import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
+import { replacePath } from "./replacePath";
 import { ArchiveThisSettingTab } from "./settings";
 
 export default class ArchiveThis extends Plugin {
@@ -264,7 +270,7 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
-		const newPath = this.getRestorationDefaultPath(file);
+		const newPath = this.getRestorePath(file);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
@@ -350,10 +356,12 @@ export default class ArchiveThis extends Plugin {
 
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
-		const newPath = this.getArchiveDefaultPath(file);
+		const newPath = this.getArchivePath(file);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
+			if (this.settings.overridePaths.length)
+				await setOriginalPath(file, this.app, this.settings);
 			return true; //success
 		} catch (e) {
 			console.warn(e);
@@ -361,15 +369,21 @@ export default class ArchiveThis extends Plugin {
 		}
 	}
 
-	getArchiveDefaultPath(file: TAbstractFile): string {
+	getArchivePath(file: TAbstractFile): string {
 		const rootArchive = normalizePath(this.settings.archiveFolder);
-		return normalizePath(`${rootArchive}/${file.path}`);
+		const defaultPath = normalizePath(`${rootArchive}/${file.path}`);
+		if (!this.settings.overridePaths.length) return defaultPath;
+		const fm = getFrontmatterForArchive(file, this.app, this.settings);
+		return replacePath(defaultPath, this.settings.overridePaths, fm);
 	}
 
-	getRestorationDefaultPath(file: TAbstractFile): string {
-		return normalizePath(
+	getRestorePath(file: TAbstractFile): string {
+		const defaultPath = normalizePath(
 			file.path.replace(normalizePath(this.settings.archiveFolder), "").trim()
 		);
+		if (!this.settings.overridePaths.length) return defaultPath;
+		const fm = getOriginalPathForRestore(file, this.app, this.settings);
+		return fm ?? defaultPath;
 	}
 
 	async saveSettings() {
