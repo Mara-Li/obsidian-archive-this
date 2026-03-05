@@ -49,7 +49,7 @@ function getNamedFolderNote(
 	return folderNote instanceof TFile ? folderNote : null;
 }
 
-export async function renameFoldernote(
+export async function renameFolderNote(
 	newPath: string,
 	oldPath: string,
 	app: App,

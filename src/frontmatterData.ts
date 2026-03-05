@@ -86,6 +86,10 @@ export function getOriginalPathForRestore(
 	if (!folderNote) return;
 	const fm = getFrontmatterData(app, folderNote);
 	const key = frontmatterKey(fm?.[pathFrontmatterKey]);
-	if (key?.match(/\.(.*?)$/)) return key.replace(/\.(.*?)$/, ""); //if the key has an extension, we remove it because it is a folder
+	if (key?.match(/\.(.*?)$/)) {
+		const splittedKey = key.split("/");
+		splittedKey.pop();
+		return splittedKey.join("/");
+	} //if the key has an extension, we remove it because it is a folder
 	return key;
 }
