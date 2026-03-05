@@ -7,8 +7,9 @@ import {
 } from "obsidian";
 import { getFolderNote } from "./findFolderNote";
 import type { ArchiveThisSettings } from "./interfaces";
+import { frontmatterKey } from "./replacePath";
 
-function getFrontmatterData(app: App, file: TFile) {
+export function getFrontmatterData(app: App, file: TFile) {
 	return app.metadataCache.getFileCache(file)?.frontmatter;
 }
 
@@ -85,18 +86,7 @@ export function getOriginalPathForRestore(
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
 	if (!folderNote) return;
 	const fm = getFrontmatterData(app, folderNote);
-	return frontmatterKey(fm?.[pathFrontmatterKey]);
-}
-
-/**
- * We should only use the frontmatter key if is is a stringify value
- * @param frontmatterKey
- */
-export function frontmatterKey(frontmatterKey: unknown) {
-	if (frontmatterKey == null) return undefined;
-	if (typeof frontmatterKey === "string")
-		return frontmatterKey.length ? frontmatterKey : undefined;
-	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
-	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
-	return undefined;
+	const key = frontmatterKey(fm?.[pathFrontmatterKey]);
+	if (key?.match(/\.(.*?)$/)) return key.replace(/\.(.*?)$/, ""); //if the key has an extension, we remove it because it is a folder
+	return key;
 }

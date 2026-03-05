@@ -1,4 +1,3 @@
-import { frontmatterKey } from "./frontmatterData";
 import type { OverridePath } from "./interfaces";
 
 function parseKeys(replacement: string): Map<string, string | undefined> {
@@ -12,6 +11,19 @@ function parseKeys(replacement: string): Map<string, string | undefined> {
 	return keys;
 }
 
+/**
+ * We should only use the frontmatter key if is is a stringify value
+ * @param frontmatterKey
+ */
+export function frontmatterKey(frontmatterKey: unknown) {
+	if (frontmatterKey == null) return undefined;
+	if (typeof frontmatterKey === "string")
+		return frontmatterKey.length ? frontmatterKey : undefined;
+	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
+	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
+	return undefined;
+}
+
 function replaceKeys(
 	replacement: string,
 	keys: Map<string, string | undefined>,
@@ -21,7 +33,7 @@ function replaceKeys(
 	keys.forEach((defaultValue, key) => {
 		const value = frontmatterKey(frontmatter?.[key]) ?? defaultValue;
 		if (!value) return; //we should skip invalid path
-		result = result.replace(new RegExp(`{{${key}(\\|.*?)?}}`, "g"), value);
+		result = result.replaceAll(new RegExp(`{{${key}(\\|.*?)?}}`, "g"), value);
 	});
 	return result;
 }
@@ -40,7 +52,7 @@ function sourceToReplacement(
 	const keys = parseKeys(path.archivePath);
 	const replacePath = replaceKeys(path.archivePath, keys, frontmatter);
 	if (path.regex) {
-		const sourceRegex = new RegExp(path.sourcePath);
+		const sourceRegex = new RegExp(path.sourcePath, "g");
 		return sourcePath.replace(sourceRegex, replacePath);
 	}
 	return sourcePath.replace(path.sourcePath, replacePath);

@@ -14,7 +14,7 @@ import {
 } from "./frontmatterData";
 import { resources, translationLanguage } from "./i18n";
 import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
-import { replacePath } from "./replacePath";
+import { renameFoldernote, replacePath } from "./replacePath";
 import { ArchiveThisSettingTab } from "./settings";
 
 export default class ArchiveThis extends Plugin {
@@ -310,8 +310,6 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
-		console.log("Restoration: new path", newPath, "dirName", dirName);
-
 		// Handle existing destination
 		if (await this.app.vault.exists(newPath)) {
 			console.warn("! Destination already exists:", newPath);
@@ -362,11 +360,14 @@ export default class ArchiveThis extends Plugin {
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const newPath = this.getArchivePath(file);
+		console.warn("New path:", newPath);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
-			if (this.settings.overridePaths.length)
+			if (this.settings.overridePaths.length) {
 				await setOriginalPath(file, this.app, this.settings);
+				await renameFoldernote(newPath, file, this.app, this.settings);
+			}
 			return true; //success
 		} catch (e) {
 			console.warn(e);
