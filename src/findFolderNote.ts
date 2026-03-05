@@ -20,8 +20,9 @@ export function getFolderNote(
 
 function getFolderNoteInside(folder: TFolder): TFile | null {
 	if (folder.children.length === 0) return null; //no folder note
+	console.log(folder.children.map((child) => child.name));
 	const folderNote = folder.children.find(
-		(child) => child instanceof TFile && child.name === `${folder.name}.md`
+		(child) => child instanceof TFile && child.basename === folder.name
 	);
 	return folderNote instanceof TFile ? folderNote : null;
 }
