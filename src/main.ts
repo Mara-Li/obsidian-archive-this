@@ -7,7 +7,7 @@ import {
 	TFile,
 	TFolder,
 } from "obsidian";
-import { renameFoldernote } from "./findFolderNote";
+import { renameFolderNote } from "./findFolderNote";
 import {
 	getFrontmatterForArchive,
 	getOriginalPathForRestore,
@@ -271,10 +271,13 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
+		const oldPath = file.path;
 		const newPath = this.getRestorePath(file);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
+			if (this.settings.overridePaths.length)
+				await renameFolderNote(newPath, oldPath, this.app, this.settings, true);
 			return true;
 		} catch (e) {
 			console.warn(e);
@@ -366,7 +369,7 @@ export default class ArchiveThis extends Plugin {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
 			if (this.settings.overridePaths.length)
-				await renameFoldernote(newPath, oldPath, this.app, this.settings);
+				await renameFolderNote(newPath, oldPath, this.app, this.settings);
 
 			return true; //success
 		} catch (e) {
@@ -375,7 +378,7 @@ export default class ArchiveThis extends Plugin {
 		}
 	}
 
-	getArchivePath(file: TAbstractFile): string {
+	private getArchivePath(file: TAbstractFile): string {
 		const rootArchive = normalizePath(this.settings.archiveFolder);
 		const defaultPath = normalizePath(`${rootArchive}/${file.path}`);
 		if (!this.settings.overridePaths.length) return defaultPath;
@@ -383,7 +386,7 @@ export default class ArchiveThis extends Plugin {
 		return replacePath(defaultPath, this.settings.overridePaths, fm);
 	}
 
-	getRestorePath(file: TAbstractFile): string {
+	private getRestorePath(file: TAbstractFile): string {
 		const defaultPath = normalizePath(
 			file.path.replace(this.settings.archiveFolder, "").trim()
 		);
