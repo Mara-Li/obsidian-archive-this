@@ -1,3 +1,4 @@
+import { frontmatterKey } from "./frontmatterData";
 import type { OverridePath } from "./interfaces";
 
 function parseKeys(replacement: string): Map<string, string | undefined> {
@@ -9,17 +10,6 @@ function parseKeys(replacement: string): Map<string, string | undefined> {
 		keys.set(match.groups!.key, match.groups!.default);
 	}
 	return keys;
-}
-
-/**
- * We should only use the frontmatter key if is is a stringify value
- * @param frontmatterKey
- */
-function frontmatterKey(frontmatterKey: unknown) {
-	if (typeof frontmatterKey === "string") return frontmatterKey;
-	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
-	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
-	return undefined;
 }
 
 function replaceKeys(
@@ -72,6 +62,6 @@ export function replacePath(
 	overridePaths.forEach((path) => {
 		result = sourceToReplacement(result, path, frontmatter);
 	});
-	if (!result.match(/{{.*?}}/)) return result;
+	if (!result.match(/{{.*?}}/) || !result.length) return result;
 	return sourcePath;
 }
