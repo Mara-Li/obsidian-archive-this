@@ -1,4 +1,3 @@
-import { normalizePath, type FrontMatterCache } from "obsidian";
 import type { OverridePath } from "./interfaces";
 
 function parseKeys(replacement: string): Map<string, string | undefined> {
@@ -11,14 +10,25 @@ function parseKeys(replacement: string): Map<string, string | undefined> {
 	return keys;
 }
 
+/**
+ * We should only use the frontmatter key if is is a stringify value
+ * @param frontmatterKey 
+ */
+function frontmatterKey(frontmatterKey: unknown) {
+	if (typeof frontmatterKey === "string") return frontmatterKey;
+	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
+	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
+	return undefined;
+}
+
 function replaceKeys(
 	replacement: string,
 	keys: Map<string, string | undefined>,
-	frontmatter?: FrontMatterCache
+	frontmatter?: Record<string, any>
 ): string {
 	let result = replacement;
 	keys.forEach((defaultValue, key) => {
-		const value = frontmatter?.[key] ?? defaultValue;
+		const value = frontmatterKey(frontmatter?.[key]) ?? defaultValue;
 		if (!value) return; //we should skip invalid path
 		result = result.replace(new RegExp(`{{${key}(\\|.*?)?}}`, "g"), value);
 	});
@@ -32,7 +42,7 @@ function replaceKeys(
 function sourceToReplacement(
 	sourcePath: string,
 	path: OverridePath,
-	frontmatter?: FrontMatterCache
+	frontmatter?: Record<string, any>
 ): string {
 	const keys = parseKeys(path.archivePath);
 	const replacePath = replaceKeys(path.archivePath, keys, frontmatter);
@@ -45,17 +55,19 @@ function sourceToReplacement(
 
 /**
  * Replace all in the path
+ * @param sourcePath The path to replace, it is based on the default created path, so Archives folder is already set.
+ * @param overridePaths The list of path overrides to apply
+ * @return The path to use for the archive, if no override is applied or they are errors, it returns the sourcePath
  */
 export function replacePath(
 	sourcePath: string,
-	defaultPath: string,
 	overridePaths: OverridePath[],
-	frontmatter?: FrontMatterCache
+	frontmatter?: Record<string, any>
 ): string {
 	let result = sourcePath;
 	overridePaths.forEach((path) => {
 		result = sourceToReplacement(result, path, frontmatter);
 	});
-	if (!result.match(/{{.*?}}/)) return normalizePath(result);
-	return defaultPath;
+	if (!result.match(/{{.*?}}/)) return result;
+	return sourcePath;
 }
