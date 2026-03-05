@@ -4,7 +4,7 @@ import {
 	normalizePath,
 	Plugin,
 	type TAbstractFile,
-	type TFile,
+	TFile,
 	TFolder,
 } from "obsidian";
 import { resources, translationLanguage } from "./i18n";
@@ -297,16 +297,54 @@ export default class ArchiveThis extends Plugin {
 	/**
 	 * @author [gOATiful](https://github.com/gOATiful/para-shortcuts)
 	 * @credit [para-shortcuts/moveFileAndCreateFolder](https://github.com/gOATiful/para-shortcuts/blob/6da18dd1da9fa6ceec5e8aa9a844510d355b72f5/src/main.ts#L274)
-	 * @param file {TAbstractFile}
+	 * @param source {TAbstractFile}
 	 * @param newPath {string}
 	 */
-	private async moveFileAndCreateFolder(file: TAbstractFile, newPath: string) {
+	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
-		if (await this.app.vault.exists(dirName)) {
-			await this.app.fileManager.renameFile(file, newPath);
-		} else {
+		
+		// Handle existing destination
+		if (await this.app.vault.exists(newPath)) {
+			const newPathTF = this.app.vault.getAbstractFileByPath(newPath);
+			
+			// File → File: overwrite by deleting the old one
+			if (newPathTF instanceof TFile && source instanceof TFile) {
+				await this.app.fileManager.trashFile(newPathTF);
+			}
+			// Folder → Folder: merge recursively
+			else if (newPathTF instanceof TFolder && source instanceof TFolder) {
+				await this.mergeFolders(source, newPathTF);
+				return; // Exit early since merge handles everything
+			}
+		}
+		
+		// Ensure parent directory exists
+		if (!(await this.app.vault.exists(dirName))) {
 			await this.app.vault.createFolder(dirName);
-			await this.app.fileManager.renameFile(file, newPath);
+		}
+		
+		// Move the file/folder
+		await this.app.fileManager.renameFile(source, newPath);
+	}
+
+	/**
+	 * Recursively merge source folder into destination folder
+	 * @param source {TFolder} Source folder to merge from
+	 * @param destination {TFolder} Destination folder to merge into
+	 */
+	private async mergeFolders(source: TFolder, destination: TFolder) {
+		// Important: renaming children mutates source.children, so we iterate on a snapshot.
+		const sourceChildren = [...source.children];
+
+		for (const child of sourceChildren) {
+			const destinationPath = normalizePath(`${destination.path}/${child.name}`);
+			await this.moveFileAndCreateFolder(child, destinationPath);
+		}
+
+		// Remove the source folder when it has been fully merged.
+		const sourceFolder = this.app.vault.getFolderByPath(source.path);
+		if (sourceFolder && sourceFolder.children.length === 0) {
+			await this.app.fileManager.trashFile(sourceFolder);
 		}
 	}
 
