@@ -61,7 +61,6 @@ export async function renameFoldernote(
 		//get the foldernote in the new folder
 		const nameToFind = oldPath.split("/").pop();
 		if (!nameToFind) return;
-		console.log("In renameFoldernote, nameToFind:", nameToFind);
 		const folderNote = getFolderNote(newTFile, settings, nameToFind);
 		if (!folderNote) return;
 		if (restore) {
