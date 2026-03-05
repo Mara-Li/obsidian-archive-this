@@ -7,6 +7,7 @@ import {
 	TFile,
 	TFolder,
 } from "obsidian";
+import { renameFoldernote } from "./findFolderNote";
 import {
 	getFrontmatterForArchive,
 	getOriginalPathForRestore,
@@ -14,7 +15,7 @@ import {
 } from "./frontmatterData";
 import { resources, translationLanguage } from "./i18n";
 import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
-import { renameFoldernote, replacePath } from "./replacePath";
+import { replacePath } from "./replacePath";
 import { ArchiveThisSettingTab } from "./settings";
 
 export default class ArchiveThis extends Plugin {
@@ -271,7 +272,6 @@ export default class ArchiveThis extends Plugin {
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const newPath = this.getRestorePath(file);
-		console.log("New path:", newPath);
 		try {
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);
@@ -310,9 +310,11 @@ export default class ArchiveThis extends Plugin {
 	 */
 	private async moveFileAndCreateFolder(source: TAbstractFile, newPath: string) {
 		const dirName = this.getDirName(newPath);
+		console.log("Moving", source.path, "to", newPath);
+		console.log("DirName:", dirName);
+
 		// Handle existing destination
 		if (await this.app.vault.exists(newPath)) {
-			console.warn("! Destination already exists:", newPath);
 			const newPathTF = this.app.vault.getAbstractFileByPath(newPath);
 
 			// File → File: overwrite by deleting the old one
@@ -359,15 +361,16 @@ export default class ArchiveThis extends Plugin {
 
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
+		const oldPath = file.path;
 		const newPath = this.getArchivePath(file);
-		console.warn("New path:", newPath);
 		try {
+			if (this.settings.overridePaths.length)
+				await setOriginalPath(file, this.app, this.settings);
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inSource) await this.deleteWhenEmpty(oldParent);
-			if (this.settings.overridePaths.length) {
-				await setOriginalPath(file, this.app, this.settings);
-				await renameFoldernote(newPath, file, this.app, this.settings);
-			}
+			if (this.settings.overridePaths.length)
+				await renameFoldernote(newPath, oldPath, this.app, this.settings);
+
 			return true; //success
 		} catch (e) {
 			console.warn(e);

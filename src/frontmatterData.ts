@@ -53,6 +53,7 @@ export async function setOriginalPath(
 	app: App,
 	settings: ArchiveThisSettings
 ) {
+	console.log("Source path in setOriginalPath", sourceFile.path);
 	const frontmatterKey = settings.originalPathFrontmatterKey;
 	if (sourceFile instanceof TFile) {
 		await setOriginalPathInFm(app, sourceFile, frontmatterKey);
