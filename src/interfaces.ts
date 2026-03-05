@@ -23,6 +23,10 @@ export interface ArchiveThisSettings {
 		 */
 		name: string;
 	};
+	date: {
+		output: string;
+		input: string;
+	};
 }
 
 export type OverridePath = {
@@ -44,4 +48,16 @@ export const DEFAULT_SETTINGS: ArchiveThisSettings = {
 		mode: "inside",
 		name: "index.md",
 	},
+	date: {
+		output: "YYYY-MM-DD",
+		input: "YYYY-MM-DD",
+	},
 };
+
+export type FileStats = {
+	ctime: number;
+	mtime: number;
+	size: number;
+};
+
+export type DateFormat = ArchiveThisSettings["date"];
