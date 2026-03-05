@@ -70,10 +70,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		 
 		L'utilisation des regex est totalement possible (ainsi que les remplacement via \`$1\` par exemple) en activant le toggle regex.
 		
-		A noter que les transformations sont faites dans l'ordre de la liste.
-		
-		> [!warning]
-		> Ces remplacements ne fonctionnent que sur les fichiers, puisque seulement ces derniers peuvent avoir des métadonnées.`
+		A noter que les transformations sont faites dans l'ordre de la liste.`
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
 		component.unload();
 
@@ -87,6 +84,51 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 		);
+
+		//Folder note settings
+		new Setting(containerEl)
+		.setName("Folder note settings")
+		.setDesc("Si la source est un dossier, alors le remplacement de chemin se basera sur une folder note pour sauvegarder le chemin original ainsi que les remplacements qui utilisent des clés de propriétés. Si cette fonction est désactivée, alors il n'y aura pas de remplacement de chemin sur les dossiers.")
+		.addToggle((toggle) =>
+			toggle.setValue(this.settings.useFolderNote.enable).onChange(async (val) => {
+				this.settings.useFolderNote.enable = val;
+				await this.plugin.saveSettings();
+				this.display();
+			})
+		)
+
+		if (this.settings.useFolderNote.enable) {
+			new Setting(containerEl)
+			.setName("Folder note behavior")
+			.setDesc("Une folder note peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple). ")
+			.addDropdown((dropdown) =>
+				dropdown
+				.addOption("inside", "Inside the source folder")
+				.addOption("outside", "Outside the source folder")
+				.addOption("named", "Inside the source folder with a specific name (index.md)")
+				.setValue(this.settings.useFolderNote.mode)
+				.onChange(async (val) => {
+					const oldMode = this.settings.useFolderNote.mode;
+					this.settings.useFolderNote.mode = val as "inside" | "outside" | "named";
+					await this.plugin.saveSettings();
+					if (val === "named" || oldMode === "named" && oldMode !== val) this.display();
+				})
+			)
+
+			if (this.settings.useFolderNote.mode === "named") {
+				new Setting(containerEl)
+				.setName("Folder note name")
+				.setDesc("Le nom du fichier de la folder note à l'intérieur du dossier source. Par défaut index.md")
+				.addText((text) =>
+					text.setValue(this.settings.useFolderNote.name)
+						.setPlaceholder("index.md")
+						.onChange(async (val) => {
+							this.settings.useFolderNote.name = val.trim();
+							await this.plugin.saveSettings();
+						})
+				);
+			}
+		}
 
 		//add button plus
 		new Setting(containerEl)
