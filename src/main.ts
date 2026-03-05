@@ -15,17 +15,17 @@ export default class ArchiveThis extends Plugin {
 	settings!: ArchiveThisSettings;
 
 	noticeError(message: string) {
-		const notice = new Notice(message, 0);
+		const notice = new Notice(message);
 		notice.containerEl.addClasses(["archive-this", "error"]);
 	}
 
 	noticeSuccess(message: string) {
-		const notice = new Notice(message, 0);
+		const notice = new Notice(message);
 		notice.containerEl.addClasses(["archive-this", "success"]);
 	}
 
 	noticeWarning(message: string) {
-		const notice = new Notice(message, 0);
+		const notice = new Notice(message);
 		notice.containerEl.addClasses(["archive-this", "warning"]);
 	}
 
