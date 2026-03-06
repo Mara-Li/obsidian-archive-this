@@ -17,3 +17,21 @@
 .archive-this .width-100 {
 	width: 100%;
 }
+
+.archive-this .width-25 {
+	width: 25%;
+}
+
+.archive-this .padding {
+	margin-left: 1em;
+	border-left: 2px solid var(--background-modifier-border);
+}
+
+.archive-this input.error {
+	border-color: var(--color-red);
+}
+
+.archive-this input.error:focus,
+.archive-this input.error:active {
+	box-shadow: 0 0 0 1px var(--color-red);
+}

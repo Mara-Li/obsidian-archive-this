@@ -47,7 +47,7 @@
     "overridePaths": {
       "desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
       "title": "Remplacer le chemin",
-      "info": "> [!info] \n> Il est possible de remplacer le chemin de destinations dans l'archive via l'utilisation de clé de propriétés, via la syntaxe \\`{{maclé}}\\`. \n> En cas d'absence de la clé, le chemin par défaut sera utilisé. \n> Il est cependant possible de fixer une valeur par défaut via la syntaxe \\`{{maclé|défaut}}\\`. L'utilisation des regex est totalement possible (ainsi que les remplacement via \\`$1\\` par exemple) en ajout des regex flags.\n> Des transformations des clés sont possibles en [suivant la syntaxe suivante](todo)\n\nÀ noter que les remplacements sont faits dans l'ordre de la liste. \n\nIl est possible d'utiliser les clés spéciales \\`{{size}}\\`, \\`{{mtime}}\\` et \\`{{ctime}}\\` qui se basent sur les stats du fichier/folder note source. \n\nLe format de ces clés est en ISO, mais il est possible de les formater via le champ \"Format de la date\" plus bas.",
+      "info": "> [!info] \n> Il est possible de remplacer le chemin de destinations dans l'archive via l'utilisation de clé de propriétés, via la syntaxe \\`{{maclé}}\\`. \n> En cas d'absence de la clé, le chemin par défaut sera utilisé. \n> Il est cependant possible de fixer une valeur par défaut via la syntaxe \\`{{maclé|défaut}}\\`. L'utilisation des regex est totalement possible (ainsi que les remplacement via \\`$1\\` par exemple) en ajout des regex flags.\n> Des transformations des clés sont possibles en [suivant la syntaxe suivante](todo).\n\nÀ noter que les remplacements sont faits dans l'ordre de la liste. \n\nIl est possible d'utiliser les clés spéciales \\`{{size}}\\`, \\`{{mtime}}\\` et \\`{{ctime}}\\` qui se basent sur les stats du fichier/folder note source. \n\nLe format de ces clés est en ISO, mais il est possible de les formater via le champ \"Format de la date\" plus bas.",
       "fm": "Clé de propriété pour le chemin original",
       "folderNote": {
         "title": "Folder note",
@@ -59,7 +59,25 @@
           "outside": "En dehors du dossier source",
           "named": "Dans le dossier source avec un nom spécifique (index.md)"
         }
-      }
+      },
+      "dateFormat": {
+        "title": "Format des dates",
+        "desc": "Vous pouvez utiliser la date dans le chemin, via les clés spéciales ctime ou mtime ou une propriété. \nVous pouvez utiliser [les formats moment](https://momentjs.com/docs/#/parsing/string-format/) ici pour définir le format en entrée et en sortie.",
+        "input": {
+          "title": "Format d'entrée",
+          "desc": "Format des dates utilisées dans les propriétés"
+        },
+        "output": {
+          "title": "Format de sortie"
+        }
+      },
+      "add": "Ajouter un chemin de remplacement",
+      "delete": "Supprimer le chemin de remplacement",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "sourcePath": "Chemin source",
+      "regexFlags": "Flags regex",
+      "invalidFlags": "Drapeaux invalides"
     }
   },
   "swap": {

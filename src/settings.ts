@@ -6,6 +6,7 @@ import {
 	MarkdownRenderer,
 	PluginSettingTab,
 	Setting,
+	setTooltip,
 } from "obsidian";
 import { FolderSuggester } from "./folder_suggester";
 import type { ArchiveThisSettings } from "./interfaces";
@@ -70,7 +71,6 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		component.load();
 		const markdown = dedent(i18next.t("settings.overridePaths.info"));
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
-		component.unload();
 
 		new Setting(containerEl)
 			.setName(i18next.t('settings.overridePaths.fm'))
@@ -140,12 +140,11 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			}
 		}
 
-		new Setting(containerEl)
-			.setName("Date format")
-			.setDesc(
-				"Vous pouvez, parfois, utiliser des dates dans les chemins, que ce soit via l'utilisation des clés spéciales comme ctime, mtime ou via une propriété. Utilisez le format moment ici pour définir le format résultat en chemin. Par défaut YYYY-MM-DD."
-			);
-		new Setting(containerEl).setName("Input format").addText((text) =>
+		const sett = new Setting(containerEl)
+			.setName(i18next.t("settings.overridePaths.dateFormat.title"))
+		await MarkdownRenderer.render(this.app, dedent(i18next.t("settings.overridePaths.dateFormat.desc")), sett.descEl, "", component);
+
+		new Setting(containerEl).setName(i18next.t("settings.overridePaths.dateFormat.input.title")).setDesc(i18next.t("settings.overridePaths.dateFormat.input.desc")).setClass("padding").addText((text) =>
 			text
 				.setValue(this.settings.date.input)
 				.setPlaceholder("YYYY-MM-DD")
@@ -154,7 +153,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 		);
-		new Setting(containerEl).setName("Output format").addText((text) =>
+		new Setting(containerEl).setName(i18next.t("settings.overridePaths.dateFormat.output.title")).setClass("padding").addText((text) =>
 			text
 				.setValue(this.settings.date.output)
 				.setPlaceholder("YYYY-MM-DD")
@@ -167,7 +166,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		//add button plus
 		new Setting(containerEl).addButton((btn) =>
 			btn
-				.setButtonText("Add override path")
+				.setButtonText(i18next.t("settings.overridePaths.add"))
 				.setCta()
 				.onClick(() => {
 					this.settings.overridePaths.push({
@@ -180,11 +179,11 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		);
 
 		this.settings.overridePaths.forEach((overridePath, index) => {
-			const setting = new Setting(containerEl)
+			new Setting(containerEl)
 				.setNoInfo()
 				.addExtraButton((btn) =>
 					btn
-						.setTooltip("Delete override path")
+						.setTooltip(i18next.t("settings.overridePaths.delete"))
 						.setIcon("trash")
 						.onClick(async () => {
 							this.settings.overridePaths.splice(index, 1);
@@ -194,7 +193,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 				)
 				.addExtraButton((btn) =>
 					btn
-						.setTooltip("Move up")
+						.setTooltip(i18next.t("settings.overridePaths.moveUp"))
 						.setIcon("arrow-up")
 						.onClick(async () => {
 							if (index === 0) return;
@@ -207,7 +206,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 				)
 				.addExtraButton((btn) =>
 					btn
-						.setTooltip("Move down")
+						.setTooltip(i18next.t("settings.overridePaths.moveDown"))
 						.setIcon("arrow-down")
 						.onClick(async () => {
 							if (index === this.settings.overridePaths.length - 1) return;
@@ -220,41 +219,47 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 				)
 				.addText((text) => {
 					text
-						.setPlaceholder("Source path")
+						.setPlaceholder(i18next.t("settings.overridePaths.sourcePath"))
 						.setValue(overridePath.sourcePath)
 						.onChange(async (val) => {
 							this.settings.overridePaths[index].sourcePath = val.trim();
 							await this.plugin.saveSettings();
-						});
+						})
 					text.inputEl.addClass("width-100");
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.sourcePath"), { placement: "bottom", delay: 0 });
 				})
 				.addText((text) => {
 					text
-						.setPlaceholder("Archive path")
+						.setPlaceholder(i18next.t("settings.overridePaths.outputPath"))
 						.setValue(overridePath.archivePath)
 						.onChange(async (val) => {
 							this.settings.overridePaths[index].archivePath = val.trim();
 							await this.plugin.saveSettings();
 						});
 					text.inputEl.addClass("width-100");
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.outputPath"), { placement: "bottom", delay: 0 });
+
 				})
 				.addText((text) => {
 					text
-						.setPlaceholder("regex flags")
+						.setPlaceholder(i18next.t("settings.overridePaths.regexFlags"))
 						.setValue(overridePath.regexFlags).inputEl.onblur = async () => {
 							const value = text.getValue();
 							const valid = this.verifyValidFlags(value);
 							if (!valid) {
 								text.inputEl.addClass("error");
-								this.plugin.noticeError("Invalid flags");
+								this.plugin.noticeError(i18next.t("settings.overridePaths.invalidFlags"));
 							} else {
 								text.inputEl.removeClass("error");
 								this.settings.overridePaths[index].regexFlags = value.trim();
 								await this.plugin.saveSettings();
 							}
 						};
+					text.inputEl.addClass("width-25");
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.regexFlags"), { placement: "bottom", delay: 0 });
 				});
 		});
+		component.unload();
 	}
 
 	private verifyValidFlags(value: string) {

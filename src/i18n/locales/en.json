@@ -47,7 +47,7 @@
     "overridePaths": {
       "desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
       "title": "Override path",
-      "info": "> [!info] \n\n> It is possible to replace the destination path in the archive via the use of properties keys, via the syntax \\`{{key}}\\`. \n> If the key is missing, the default path will be used. \n> It is however possible to set a default value via the syntax \\`{{key|default}}\\`. \nThe use of regex is completely possible (as well as replacement via \\`$1\\` for example) by adding regex flags.\n> Key's transformation are possible by following the [syntax](todo) \n\nNote that the replacement are done in the order of the list. \n\nIt is possible to use the special keys \\`{{size}}\\`, \\`{{mtime}}\\` and \\`{{ctime}}\\` which are based on the stats of the source file/folder note. \n\nThe format of these keys is in ISO, but it is possible to format them via the \"Date format\" field below.",
+      "info": "> [!info] \n\n> It is possible to replace the destination path in the archive via the use of properties keys, via the syntax \\`{{key}}\\`. \n> If the key is missing, the default path will be used. \n> It is however possible to set a default value via the syntax \\`{{key|default}}\\`. \nThe use of regex is completely possible (as well as replacement via \\`$1\\` for example) by adding regex flags.\n> Key's transformation are possible by following the [syntax](todo). \n\nNote that the replacement are done in the order of the list. \n\nIt is possible to use the special keys \\`{{size}}\\`, \\`{{mtime}}\\` and \\`{{ctime}}\\` which are based on the stats of the source file/folder note. \n\nThe format of these keys is in ISO, but it is possible to format them via the \"Date format\" field below.",
       "fm": "Frontmatter key for original path",
       "folderNote": {
         "title": "Folder note",
@@ -63,7 +63,26 @@
           "title": "Folder note name",
           "desc": "Le nom du fichier de la folder note à l'intérieur du dossier source. Par défaut index.md"
         }
-      }
+      },
+      "dateFormat": {
+        "title": "Date format",
+        "desc": "You can use date in the path, via the ctime or mtime special keys or a property. You can use [moment format](https://momentjs.com/docs/#/parsing/string-format/) here to define the format in input and output. ",
+        "input": {
+          "title": "Input format",
+          "desc": "Date format used in the frontmatter"
+        },
+        "output": {
+          "title": "Output format"
+        }
+      },
+      "add": "Add override path",
+      "delete": "Delete override path",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "sourcePath": "Source path",
+      "outputPath": "Archive path",
+      "regexFlags": "Regex flags",
+      "invalidFlags": "Invalid flags"
     }
   },
   "swap": {
