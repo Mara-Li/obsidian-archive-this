@@ -51,6 +51,7 @@ export function frontmatterKey(frontmatterKey: unknown, format: DateFormat) {
 		return frontmatterKey.length ? convertDate(frontmatterKey, format) : undefined;
 	if (typeof frontmatterKey === "number") return frontmatterKey.toString();
 	if (typeof frontmatterKey === "boolean") return frontmatterKey ? "true" : "false";
+	if (Array.isArray(frontmatterKey)) return frontmatterKey.join("/");
 	return undefined;
 }
 
@@ -64,7 +65,11 @@ function transformKey(key: string, transformation?: KeyNameInPath) {
 				lower: true,
 			});
 		case ValidTransformation.Slugify:
-			return slugify(key, {strict: false, replacement: transformation.transform.remplacement?.from, lower:false});
+			return slugify(key, {
+				strict: false,
+				replacement: transformation.transform.remplacement?.from,
+				lower: false,
+			});
 		case ValidTransformation.Lowercase:
 			return replaceTheTransform(key.toLowerCase(), transformation.transform);
 		case ValidTransformation.NoAccent:
@@ -102,7 +107,10 @@ function replaceKeys(
 			value = stats.size != null ? stats.size.toString() : defaultValue?.default;
 		else value = frontmatterKey(frontmatter?.[key], dateFormat) ?? defaultValue?.default;
 		if (!value) return; //we should skip invalid path
-		result = result.replaceAll(new RegExp(`{{${key}(\\|.*?)?(:(.*?))?}}`, "g"), transformKey(value, defaultValue));
+		result = result.replaceAll(
+			new RegExp(`{{${key}(\\|.*?)?(:(.*?))?}}`, "g"),
+			transformKey(value, defaultValue)
+		);
 	});
 	return result;
 }
