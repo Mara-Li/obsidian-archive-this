@@ -138,8 +138,8 @@ function sourceToReplacement(
 		frontmatter,
 		dateFormat
 	);
-	if (path.regex) {
-		const sourceRegex = new RegExp(path.sourcePath, "g");
+	if (path.regexFlags.length) {
+		const sourceRegex = new RegExp(path.sourcePath, path.regexFlags);
 		return sourcePath.replace(sourceRegex, replacePath);
 	}
 	return sourcePath.replaceAll(path.sourcePath, replacePath);

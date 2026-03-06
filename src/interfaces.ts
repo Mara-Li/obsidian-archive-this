@@ -32,7 +32,12 @@ export interface ArchiveThisSettings {
 export type OverridePath = {
 	sourcePath: string;
 	archivePath: string;
-	regex: boolean;
+	/**
+	 * @deprecated
+	 * use regexFlags instead
+	 */
+	regex?: boolean;
+	regexFlags: string;
 };
 
 export const DEFAULT_SETTINGS: ArchiveThisSettings = {

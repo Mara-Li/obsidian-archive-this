@@ -184,7 +184,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					this.settings.overridePaths.push({
 						sourcePath: "",
 						archivePath: "",
-						regex: false,
+						regexFlags: "g"
 					});
 					this.display();
 				})
@@ -248,21 +248,38 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						});
 					text.inputEl.addClass("width-100");
-				});
-			//set a simili button that mimic toggle on the click with a check or a cross depending to the state of the regex
-			setting.addExtraButton((btn) => {
-				btn
-					.setTooltip(
-						this.settings.overridePaths[index].regex ? "Regex enabled" : "Regex disabled"
-					)
-					.setIcon(overridePath.regex ? "regex" : "cross")
-					.onClick(async () => {
-						this.settings.overridePaths[index].regex =
-							!this.settings.overridePaths[index].regex;
-						await this.plugin.saveSettings();
-						await this.display();
-					});
-			});
+				})
+				.addText((text) => {
+					text.setPlaceholder("g")
+						.setValue(overridePath.regexFlags)
+						.inputEl.onblur = async () => {
+							const value = text.getValue();
+							const valid = this.verifyValidFlags(value);
+							if (!valid) {
+								text.inputEl.addClass("error")
+								this.plugin.noticeError("Invalid flags")
+							}
+							else {
+								text.inputEl.removeClass("error");
+								this.settings.overridePaths[index].regexFlags = value.trim();
+								await this.plugin.saveSettings();
+							}
+						}
+				})
 		});
+	}
+
+	private verifyValidFlags(value: string) {
+		//can be gimsuy, gmi, but not gmii
+		if (!value.length) return true
+		const VALID_FLAGS = new Set(['d', 'g', 'i', 'm', 's', 'u', 'v', 'y']);
+		const seen = new Set<string>();
+		for (const f of value) {
+			if (!VALID_FLAGS.has(f) || seen.has(f)) {
+				return false;
+			}
+			seen.add(f);
+		}
+		return true;
 	}
 }
