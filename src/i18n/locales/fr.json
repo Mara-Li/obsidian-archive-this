@@ -1,62 +1,75 @@
 {
-	"archive": {
-		"error": {
-			"all_one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'information.",
-			"all_other": "Échec de l'archivage de {{- count}} fichiers. Consulter la console pour plus d'informations.",
-			"one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'informations."
-		},
-		"success": {
-			"all_one": "Le fichier {{- file}} a été archivé avec succès.",
-			"all_other": "{{- count}} fichiers archivés avec succès.",
-			"one": "{{- file}} archivé avec succès."
-		}
-	},
-	"cmd": {
-		"archive": "Archive",
-		"archiveAll": "Archiver tout",
-		"restore": "Restaurer",
-		"restoreAll": "Tous restaurer",
-		"swap": "Archiver/restaurer"
-	},
-	"new": "nouveau dossier",
-	"restore": {
-		"error": {
-			"all_one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations.",
-			"one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations."
-		},
-		"success": {
-			"all_one": "Restauration réussie de {{- file}}.",
-			"all_other": "{{- count}} fichiers ont été restauré correctement.",
-			"one": "Restauration réussie de {{- file}}."
-		}
-	},
-	"settings": {
-		"empty": {
-			"inArchive": {
-				"desc": "Quand le(s) fichier(s) ou dossier(s) sont déplacés hors de l'archive, supprime le dossier s'il est vide. Note : Le dossier d'Archive ne sera pas supprimé, même si vide.",
-				"title": "Dans l'archive"
-			},
-			"inSource": {
-				"desc": "Quand le(s) fichier(s) ou dossier(s) sont archivés, supprime le dossier parent s'il est vide.",
-				"title": "Dans la source"
-			},
-			"title": "Supprimer le dossier quand vide"
-		},
-		"folder": "Dossier d'archive",
-		"folderPlaceholder": "Archives",
-		"overridePaths": {
-			"desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
-			"title": "Remplacer le chemin"
-		}
-	},
-	"swap": {
-		"error": {
-			"all_one": "Échec du déplacement de {{- file}}. Vérifier la console pour plus d'information.",
-			"all_other": "Échec du déplacement de {{- count}} fichiers. Vérifier la console pour plus d'informations."
-		},
-		"success": {
-			"all_one": "Le fichier {{- file}} a été déplacé avec succès.",
-			"all_other": "{{- count}} fichier ont été déplacé avec succès."
-		}
-	}
+  "archive": {
+    "error": {
+      "all_one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'information.",
+      "all_other": "Échec de l'archivage de {{- count}} fichiers. Consulter la console pour plus d'informations.",
+      "one": "Échec de l'archivage de {{- file}}. Consulter la console pour plus d'informations."
+    },
+    "success": {
+      "all_one": "Le fichier {{- file}} a été archivé avec succès.",
+      "all_other": "{{- count}} fichiers archivés avec succès.",
+      "one": "{{- file}} archivé avec succès."
+    }
+  },
+  "cmd": {
+    "archive": "Archive",
+    "archiveAll": "Archiver tout",
+    "restore": "Restaurer",
+    "restoreAll": "Tous restaurer",
+    "swap": "Archiver/restaurer"
+  },
+  "new": "nouveau dossier",
+  "restore": {
+    "error": {
+      "all_one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations.",
+      "one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations."
+    },
+    "success": {
+      "all_one": "Restauration réussie de {{- file}}.",
+      "all_other": "{{- count}} fichiers ont été restauré correctement.",
+      "one": "Restauration réussie de {{- file}}."
+    }
+  },
+  "settings": {
+    "empty": {
+      "inArchive": {
+        "desc": "Quand le(s) fichier(s) ou dossier(s) sont déplacés hors de l'archive, supprime le dossier s'il est vide. Note : Le dossier d'Archive ne sera pas supprimé, même si vide.",
+        "title": "Dans l'archive"
+      },
+      "inSource": {
+        "desc": "Quand le(s) fichier(s) ou dossier(s) sont archivés, supprime le dossier parent s'il est vide.",
+        "title": "Dans la source"
+      },
+      "title": "Supprimer le dossier quand vide"
+    },
+    "folder": "Dossier d'archive",
+    "folderPlaceholder": "Archives",
+    "overridePaths": {
+      "desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
+      "title": "Remplacer le chemin",
+      "info": "> [!info] \n> Il est possible de remplacer le chemin de destinations dans l'archive via l'utilisation de clé de propriétés, via la syntaxe \\`{{maclé}}\\`. \n> En cas d'absence de la clé, le chemin par défaut sera utilisé. \n> Il est cependant possible de fixer une valeur par défaut via la syntaxe \\`{{maclé|défaut}}\\`. L'utilisation des regex est totalement possible (ainsi que les remplacement via \\`$1\\` par exemple) en ajout des regex flags.\n> Des transformations des clés sont possibles en [suivant la syntaxe suivante](todo)\n\nÀ noter que les remplacements sont faits dans l'ordre de la liste. \n\nIl est possible d'utiliser les clés spéciales \\`{{size}}\\`, \\`{{mtime}}\\` et \\`{{ctime}}\\` qui se basent sur les stats du fichier/folder note source. \n\nLe format de ces clés est en ISO, mais il est possible de les formater via le champ \"Format de la date\" plus bas.",
+      "fm": "Clé de propriété pour le chemin original",
+      "folderNote": {
+        "title": "Folder note",
+        "desc": "Si la source est un dossier, alors le remplacement de chemin se basera sur une folder note pour sauvegarder le chemin original ainsi que les remplacements qui utilisent des clés de propriétés. Si cette fonction est désactivée, alors il n'y aura pas de remplacement de chemin sur les dossiers.",
+        "behavior": {
+          "title": "Comportement des notes de dossier",
+          "desc": "Une note de dossier peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
+          "inside": "Dans le dossier source",
+          "outside": "En dehors du dossier source",
+          "named": "Dans le dossier source avec un nom spécifique (index.md)"
+        }
+      }
+    }
+  },
+  "swap": {
+    "error": {
+      "all_one": "Échec du déplacement de {{- file}}. Vérifier la console pour plus d'information.",
+      "all_other": "Échec du déplacement de {{- count}} fichiers. Vérifier la console pour plus d'informations."
+    },
+    "success": {
+      "all_one": "Le fichier {{- file}} a été déplacé avec succès.",
+      "all_other": "{{- count}} fichier ont été déplacé avec succès."
+    }
+  }
 }

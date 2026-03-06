@@ -1,62 +1,79 @@
 {
-	"archive": {
-		"error": {
-			"all_one": "Failed to archive {{- file}}. Check the console for more informations.",
-			"all_other": "Failed to archive {{- count}} files. Check the console for more informations.",
-			"one": "Failed to archive {{- file}}. Check console for more informations."
-		},
-		"success": {
-			"all_one": "{{- file}} was archived successfully.",
-			"all_other": "{{- count}} files archived successfully.",
-			"one": "Successfully archived {{- file}}."
-		}
-	},
-	"cmd": {
-		"archive": "Archive",
-		"archiveAll": "Archive all",
-		"restore": "Restore",
-		"restoreAll": "Restore all",
-		"swap": "Archive/restore"
-	},
-	"new": "new folder",
-	"restore": {
-		"error": {
-			"all_one": "Failed to restore {{- file}}. Check console for more informations.",
-			"one": "Failed to restore {{- file}}. Check the console for more informations."
-		},
-		"success": {
-			"all_one": "Successfully restored {{- file}}.",
-			"all_other": "{{- count}} files were restored successfully.",
-			"one": "Successfully restored {{- file}}."
-		}
-	},
-	"settings": {
-		"empty": {
-			"inArchive": {
-				"desc": "When moving file(s) or folder(s) out of archive, delete the folder when it is empty. Note: The archive folder won't be deleted even if empty.",
-				"title": "In archive"
-			},
-			"inSource": {
-				"desc": "When archiving file(s) or folder(s), delete the parent folder when it is empty.",
-				"title": "In source"
-			},
-			"title": "Delete folder when empty"
-		},
-		"folder": "Archive folder",
-		"folderPlaceholder": "Archives",
-		"overridePaths": {
-			"desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
-			"title": "Override path"
-		}
-	},
-	"swap": {
-		"error": {
-			"all_one": "Failed to move {{- file}}. Check the console for more informations.",
-			"all_other": "Failed to move {{- count}} files. Check the console for more informations."
-		},
-		"success": {
-			"all_one": "{{- file}} was moved successfully.",
-			"all_other": "{{- count}} files were moved sucessfully."
-		}
-	}
+  "archive": {
+    "error": {
+      "all_one": "Failed to archive {{- file}}. Check the console for more informations.",
+      "all_other": "Failed to archive {{- count}} files. Check the console for more informations.",
+      "one": "Failed to archive {{- file}}. Check console for more informations."
+    },
+    "success": {
+      "all_one": "{{- file}} was archived successfully.",
+      "all_other": "{{- count}} files archived successfully.",
+      "one": "Successfully archived {{- file}}."
+    }
+  },
+  "cmd": {
+    "archive": "Archive",
+    "archiveAll": "Archive all",
+    "restore": "Restore",
+    "restoreAll": "Restore all",
+    "swap": "Archive/restore"
+  },
+  "new": "new folder",
+  "restore": {
+    "error": {
+      "all_one": "Failed to restore {{- file}}. Check console for more informations.",
+      "one": "Failed to restore {{- file}}. Check the console for more informations."
+    },
+    "success": {
+      "all_one": "Successfully restored {{- file}}.",
+      "all_other": "{{- count}} files were restored successfully.",
+      "one": "Successfully restored {{- file}}."
+    }
+  },
+  "settings": {
+    "empty": {
+      "inArchive": {
+        "desc": "When moving file(s) or folder(s) out of archive, delete the folder when it is empty. Note: The archive folder won't be deleted even if empty.",
+        "title": "In archive"
+      },
+      "inSource": {
+        "desc": "When archiving file(s) or folder(s), delete the parent folder when it is empty.",
+        "title": "In source"
+      },
+      "title": "Delete folder when empty"
+    },
+    "folder": "Archive folder",
+    "folderPlaceholder": "Archives",
+    "overridePaths": {
+      "desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
+      "title": "Override path",
+      "info": "> [!info] \n\n> It is possible to replace the destination path in the archive via the use of properties keys, via the syntax \\`{{key}}\\`. \n> If the key is missing, the default path will be used. \n> It is however possible to set a default value via the syntax \\`{{key|default}}\\`. \nThe use of regex is completely possible (as well as replacement via \\`$1\\` for example) by adding regex flags.\n> Key's transformation are possible by following the [syntax](todo) \n\nNote that the replacement are done in the order of the list. \n\nIt is possible to use the special keys \\`{{size}}\\`, \\`{{mtime}}\\` and \\`{{ctime}}\\` which are based on the stats of the source file/folder note. \n\nThe format of these keys is in ISO, but it is possible to format them via the \"Date format\" field below.",
+      "fm": "Frontmatter key for original path",
+      "folderNote": {
+        "title": "Folder note",
+        "desc": "If the source is a folder, the path replacement will be based on a folder note for the original path saving and the frontmatter key.\n\nIf disabled, they won't be any replacement for folders path.",
+        "behavior": {
+          "title": "Folder note behavior",
+          "desc": "Une folder note peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
+          "inside": "Inside the source folder",
+          "outside": "Outside the source folder",
+          "named": "Inside the source folder with a specific name (index.md)"
+        },
+        "named": {
+          "title": "Folder note name",
+          "desc": "Le nom du fichier de la folder note à l'intérieur du dossier source. Par défaut index.md"
+        }
+      }
+    }
+  },
+  "swap": {
+    "error": {
+      "all_one": "Failed to move {{- file}}. Check the console for more informations.",
+      "all_other": "Failed to move {{- count}} files. Check the console for more informations."
+    },
+    "success": {
+      "all_one": "{{- file}} was moved successfully.",
+      "all_other": "{{- count}} files were moved sucessfully."
+    }
+  }
 }
