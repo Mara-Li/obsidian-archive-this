@@ -57,6 +57,7 @@ export default class ArchiveThis extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file) => {
+				if (file instanceof TFile) console.log(file.stat);
 				if (!this.settings.archiveFolder.length) return; //if no archive folder, do not add the menu
 				if (!this.isInArchive(file)) {
 					menu.addItem((item) => {

@@ -61,3 +61,47 @@ export type FileStats = {
 };
 
 export type DateFormat = ArchiveThisSettings["date"];
+
+export enum ValidTransformation {
+	/**
+	 * Lowercase and strip special characters
+	 */
+	SlugifyStrict = 'slugify_strict',
+	/**
+	 * Slugify but not strict
+	 * 
+	 */
+	Slugify = 'slugify',
+	/**
+	 * Lowercase
+	 */
+	Lowercase = "lowercase",
+	/**
+	 * transform accent to their normal counterpart
+	 */
+	NoAccent = "no_accent",
+	/**
+	 * no accent + lowercase
+	 */
+	Normalize = "normalize",
+	/**
+	 * Capitalize the first letter of a string
+	 */
+	Capitalize="capitalize",
+	/**
+	 * Uppercase all the string
+	 */
+	Uppercase = "uppercase"
+	
+}
+
+export type KeyNameInPath  = {
+	default?: string,
+	transform?: {
+		type: ValidTransformation,
+		remplacement?: {
+			from: string,
+			to: string
+		}
+	}
+}

@@ -1,13 +1,35 @@
 import moment from "moment";
-import type { DateFormat, FileStats, OverridePath } from "./interfaces";
+import {
+	type DateFormat,
+	type FileStats,
+	type KeyNameInPath,
+	type OverridePath,
+	ValidTransformation,
+} from "./interfaces";
+import "uniformize";
+import slugify from "slugify";
 
-function parseKeys(replacement: string): Map<string, string | undefined> {
-	const regex = /{{(?<key>.*?)(\|(?<default>.*?))?}}/gm;
-	const keys: Map<string, string | undefined> = new Map();
+export function parseKeys(replacement: string): Map<string, KeyNameInPath | undefined> {
+	const regex = /{{(?<key>.*?)(\|(?<default>.*?))?(:(?<transform>.*))?}}/gm;
+	const keys: Map<string, KeyNameInPath | undefined> = new Map();
 	let match;
 	// biome-ignore lint/suspicious/noAssignInExpressions: it is the best way to get all matches with regex.exec in a loop
 	while ((match = regex.exec(replacement)) !== null) {
-		keys.set(match.groups!.key, match.groups!.default);
+		const groups = match.groups;
+		if (groups) {
+			let transform;
+			if (groups.transform) {
+				const [type, from, to] = groups.transform.split("/");
+				transform = {
+					type: type as ValidTransformation,
+					remplacement: { from, to },
+				};
+			}
+			keys.set(groups.key, {
+				default: groups.default,
+				transform,
+			});
+		}
 	}
 	return keys;
 }
@@ -32,9 +54,40 @@ export function frontmatterKey(frontmatterKey: unknown, format: DateFormat) {
 	return undefined;
 }
 
+function transformKey(key: string, transformation?: KeyNameInPath) {
+	if (!transformation?.transform) return key;
+	switch (transformation.transform.type) {
+		case ValidTransformation.SlugifyStrict:
+			return slugify(key, {
+				strict: true,
+				replacement: transformation.transform.remplacement?.from,
+				lower: true,
+			});
+		case ValidTransformation.Slugify:
+			return slugify(key, {strict: false, replacement: transformation.transform.remplacement?.from, lower:false});
+		case ValidTransformation.Lowercase:
+			return replaceTheTransform(key.toLowerCase(), transformation.transform);
+		case ValidTransformation.NoAccent:
+			return replaceTheTransform(key.removeAccents(), transformation.transform);
+		case ValidTransformation.Normalize:
+			return replaceTheTransform(key.normalize(), transformation.transform);
+		case ValidTransformation.Capitalize:
+			return replaceTheTransform(key.capitalize(true), transformation.transform);
+		case ValidTransformation.Uppercase:
+			return replaceTheTransform(key.toUpperCase(), transformation.transform);
+	}
+}
+
+function replaceTheTransform(value: string, transformate: KeyNameInPath["transform"]) {
+	if (transformate?.remplacement) {
+		return value.replaceAll(transformate.remplacement.from, transformate.remplacement.to);
+	}
+	return value;
+}
+
 function replaceKeys(
 	replacement: string,
-	keys: Map<string, string | undefined>,
+	keys: Map<string, KeyNameInPath | undefined>,
 	stats?: FileStats,
 	frontmatter?: Record<string, any>,
 	dateFormat: DateFormat = { input: "YYYY-MM-DD", output: "YYYY-MM-DD" }
@@ -46,10 +99,10 @@ function replaceKeys(
 		else if (key === "mtime" && stats)
 			value = moment(stats.mtime).format(dateFormat.output);
 		else if (key === "size" && stats)
-			value = stats.size != null ? stats.size.toString() : defaultValue;
-		else value = frontmatterKey(frontmatter?.[key], dateFormat) ?? defaultValue;
+			value = stats.size != null ? stats.size.toString() : defaultValue?.default;
+		else value = frontmatterKey(frontmatter?.[key], dateFormat) ?? defaultValue?.default;
 		if (!value) return; //we should skip invalid path
-		result = result.replaceAll(new RegExp(`{{${key}(\\|.*?)?}}`, "g"), value);
+		result = result.replaceAll(new RegExp(`{{${key}(\\|.*?)?(:(.*?))?}}`, "g"), transformKey(value, defaultValue));
 	});
 	return result;
 }
