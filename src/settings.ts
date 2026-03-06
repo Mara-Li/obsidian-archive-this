@@ -68,23 +68,12 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 		mdSettings.setClass("md-info");
 		const component = new Component();
 		component.load();
-		const markdown = dedent`
-		> [!info]
-		> Il est possible de remplacer le chemin de destinations dans l'archive via l'utilisation de clé de propriétés, via la syntaxe \`{{maclé}}\`.
-		> En cas d'absence de la clé, le chemin par défaut sera utilisé.
-		> Il est cependant possible de fixer une valeur par défaut via la syntaxe \`{{maclé|valeur par défaut}}\`.
-		
-		L'utilisation des regex est totalement possible (ainsi que les remplacement via \`$1\` par exemple) en activant le toggle regex.
-		
-		A noter que les transformations sont faites dans l'ordre de la liste.
-		
-		Il est possible d'utiliser les clés spéciales \`{{ctime}}\`, \`{{mtime}}\` et \`{{size}}\` qui se basent sur les stats du fichier/folder note source. Le format de ces clés est en ISO, mais il est possible de les formater via le champ "Date format" plus bas.
-		`;
+		const markdown = dedent(i18next.t("settings.overridePaths.info"));
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
 		component.unload();
 
 		new Setting(containerEl)
-			.setName("Frontmatter key for original path")
+			.setName(i18next.t('settings.overridePaths.fm'))
 			.addText((text) =>
 				text
 					.setValue(this.settings.originalPathFrontmatterKey)
@@ -97,9 +86,9 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		//Folder note settings
 		new Setting(containerEl)
-			.setName("Folder note settings")
+			.setName(i18next.t('settings.overridePaths.folderNote.title'))
 			.setDesc(
-				"Si la source est un dossier, alors le remplacement de chemin se basera sur une folder note pour sauvegarder le chemin original ainsi que les remplacements qui utilisent des clés de propriétés. Si cette fonction est désactivée, alors il n'y aura pas de remplacement de chemin sur les dossiers."
+				i18next.t('settings.overridePaths.folderNote.desc')
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.useFolderNote.enable).onChange(async (val) => {
@@ -111,17 +100,17 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		if (this.settings.useFolderNote.enable) {
 			new Setting(containerEl)
-				.setName("Folder note behavior")
+				.setName(i18next.t('settings.overridePaths.folderNote.behavior.title'))
 				.setDesc(
-					"Une folder note peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple). "
+					i18next.t('settings.overridePaths.folderNote.behavior.desc')
 				)
 				.addDropdown((dropdown) =>
 					dropdown
-						.addOption("inside", "Inside the source folder")
-						.addOption("outside", "Outside the source folder")
+						.addOption("inside", i18next.t('settings.overridePaths.folderNote.behavior.inside'))
+						.addOption("outside", i18next.t('settings.overridePaths.folderNote.behavior.outside'))
 						.addOption(
 							"named",
-							"Inside the source folder with a specific name (index.md)"
+							i18next.t("settings.overridePaths.folderNote.behavior.named")
 						)
 						.setValue(this.settings.useFolderNote.mode)
 						.onChange(async (val) => {
@@ -135,9 +124,9 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 			if (this.settings.useFolderNote.mode === "named") {
 				new Setting(containerEl)
-					.setName("Folder note name")
+					.setName(i18next.t("settings.overridePaths.folderNote.named.title"))
 					.setDesc(
-						"Le nom du fichier de la folder note à l'intérieur du dossier source. Par défaut index.md"
+						i18next.t("settings.overridePaths.folderNote.named.desc")
 					)
 					.addText((text) =>
 						text
@@ -184,7 +173,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					this.settings.overridePaths.push({
 						sourcePath: "",
 						archivePath: "",
-						regexFlags: "g"
+						regexFlags: "g",
 					});
 					this.display();
 				})
@@ -250,32 +239,31 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					text.inputEl.addClass("width-100");
 				})
 				.addText((text) => {
-					text.setPlaceholder("regex flags")
-						.setValue(overridePath.regexFlags)
-						.inputEl.onblur = async () => {
+					text
+						.setPlaceholder("regex flags")
+						.setValue(overridePath.regexFlags).inputEl.onblur = async () => {
 							const value = text.getValue();
 							const valid = this.verifyValidFlags(value);
 							if (!valid) {
-								text.inputEl.addClass("error")
-								this.plugin.noticeError("Invalid flags")
-							}
-							else {
+								text.inputEl.addClass("error");
+								this.plugin.noticeError("Invalid flags");
+							} else {
 								text.inputEl.removeClass("error");
 								this.settings.overridePaths[index].regexFlags = value.trim();
 								await this.plugin.saveSettings();
 							}
-						}
-				})
+						};
+				});
 		});
 	}
 
 	private verifyValidFlags(value: string) {
 		//can be gimsuy, gmi, but not gmii
-		if (!value.length) return true
-		const VALID_FLAGS = new Set(['d', 'g', 'i', 'm', 's', 'u', 'v', 'y']);
+		if (!value.length) return true;
+		const ValidFlags = new Set(["d", "g", "i", "m", "s", "u", "v", "y"]);
 		const seen = new Set<string>();
 		for (const f of value) {
-			if (!VALID_FLAGS.has(f) || seen.has(f)) {
+			if (!ValidFlags.has(f) || seen.has(f)) {
 				return false;
 			}
 			seen.add(f);
