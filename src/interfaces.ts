@@ -97,6 +97,10 @@ export enum ValidTransformation {
 	 * Uppercase all the string
 	 */
 	Uppercase = "uppercase",
+	/**
+	 * No changement, but allow direct transform
+	 */
+	Transform = "transform"
 }
 
 export type KeyNameInPath = {
