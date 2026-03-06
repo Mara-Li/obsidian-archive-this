@@ -66,12 +66,12 @@ export enum ValidTransformation {
 	/**
 	 * Lowercase and strip special characters
 	 */
-	SlugifyStrict = 'slugify_strict',
+	SlugifyStrict = "slugify_strict",
 	/**
 	 * Slugify but not strict
-	 * 
+	 *
 	 */
-	Slugify = 'slugify',
+	Slugify = "slugify",
 	/**
 	 * Lowercase
 	 */
@@ -87,21 +87,20 @@ export enum ValidTransformation {
 	/**
 	 * Capitalize the first letter of a string
 	 */
-	Capitalize="capitalize",
+	Capitalize = "capitalize",
 	/**
 	 * Uppercase all the string
 	 */
-	Uppercase = "uppercase"
-	
+	Uppercase = "uppercase",
 }
 
-export type KeyNameInPath  = {
-	default?: string,
+export type KeyNameInPath = {
+	default?: string;
 	transform?: {
-		type: ValidTransformation,
+		type: ValidTransformation;
 		remplacement?: {
-			from: string,
-			to: string
-		}
-	}
-}
+			from: string;
+			to: string;
+		};
+	};
+};
