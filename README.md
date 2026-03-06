@@ -22,6 +22,10 @@ The plugin automatically detects if the files or folders are in the archive fold
 Some settings are available in the settings tab:
 1. **Archive folder**: It will be created if it does not exist when using the archive command.
 2. **Delete when empty**: Delete the parent folder(s) of the moved file if they are empty. Separate options for both restore & archiving.
+3. **Overriding paths** : Allow to change the result path instead of copying the original tree. For folder, it will use the properties of the folder note.
+
+//@TODO: Write the documentation for overriding path, original_path, folder note and the allowed transformation
+//@TODO: Add screenshot
 
 ## 📥 Installation
 

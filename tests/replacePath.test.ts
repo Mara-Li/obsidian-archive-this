@@ -8,22 +8,22 @@ describe("replacePath", () => {
 		{
 			sourcePath: "folder1/folder2",
 			archivePath: "{{key1|default1}}",
-			regex: false
+			regexFlags: "g"
 		},
 		{
 			sourcePath: "inbox/(.*?)/file.md",
 			archivePath: "journal/{{date}}/file.md",
-			regex: true
+			regexFlags: "g"
 		},
 		{
 			sourcePath: "folder3/folder4/filename.md",
 			archivePath: "EX1/filename.md",
-			regex: false,
+			regexFlags: "g"
 		},
 		{
 			sourcePath: "folder7/folder8/filename.md",
 			archivePath: "folder7/folder8/rename.md",
-			regex: false,
+			regexFlags: "g"
 		}
 	]
 	const fileStat: FileStats = {
@@ -40,7 +40,7 @@ describe("replacePath", () => {
 		expect(archivePath).toBe("inbox/2023-01-01/file.md");
 	})
 	test("Should simply change the path", () => {
-		const archivePath = replacePath("folder3/folder4/filename.md", overrides, fileStat	);
+		const archivePath = replacePath("folder3/folder4/filename.md", overrides, fileStat);
 		expect(archivePath).toBe("EX1/filename.md");
 	})
 	test("Should rename", () => {
