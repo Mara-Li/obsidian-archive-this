@@ -85,7 +85,7 @@ export function getOriginalPathForRestore(
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
 	if (!folderNote) return;
 	const fm = getFrontmatterData(app, folderNote);
-	const key = frontmatterKey(fm?.[pathFrontmatterKey]);
+	const key = frontmatterKey(fm?.[pathFrontmatterKey], settings.date);
 	if (!key) return;
 
 	// For outside mode, the original_path is the path of the folder note (with extension)
