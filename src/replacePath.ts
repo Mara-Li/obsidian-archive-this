@@ -80,13 +80,14 @@ function transformKey(key: string, transformation?: KeyNameInPath) {
 			return replaceTheTransform(key.capitalize(true), transformation.transform);
 		case ValidTransformation.Uppercase:
 			return replaceTheTransform(key.toUpperCase(), transformation.transform);
+		case ValidTransformation.Transform:
+			return replaceTheTransform(key, transformation.transform)
 	}
 }
 
 function replaceTheTransform(value: string, transformate: KeyNameInPath["transform"]) {
-	if (transformate?.remplacement) {
+	if (transformate?.remplacement)
 		return value.replaceAll(transformate.remplacement.from, transformate.remplacement.to);
-	}
 	return value;
 }
 

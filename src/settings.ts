@@ -250,7 +250,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 					text.inputEl.addClass("width-100");
 				})
 				.addText((text) => {
-					text.setPlaceholder("g")
+					text.setPlaceholder("regex flags")
 						.setValue(overridePath.regexFlags)
 						.inputEl.onblur = async () => {
 							const value = text.getValue();
