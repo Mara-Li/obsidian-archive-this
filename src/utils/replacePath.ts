@@ -143,7 +143,7 @@ function sourceToReplacement(
 		frontmatter,
 		dateFormat
 	);
-	if (path.regexFlags.length) {
+	if (path.regexFlags?.length) {
 		const sourceRegex = new RegExp(path.sourcePath, path.regexFlags);
 		return sourcePath.replace(sourceRegex, replacePath);
 	}

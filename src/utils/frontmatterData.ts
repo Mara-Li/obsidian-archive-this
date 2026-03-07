@@ -7,7 +7,6 @@ import {
 } from "obsidian";
 import type { ArchiveThisSettings } from "../interfaces";
 import { getFolderNote } from "./findFolderNote";
-import { frontmatterKey } from "./replacePath";
 
 export function getFrontmatterData(app: App, file: TFile) {
 	return app.metadataCache.getFileCache(file)?.frontmatter;
@@ -85,7 +84,10 @@ export function getOriginalPathForRestore(
 	const folderNote = getFolderNote(sourceFile as TFolder, settings);
 	if (!folderNote) return;
 	const fm = getFrontmatterData(app, folderNote);
-	const key = frontmatterKey(fm?.[pathFrontmatterKey], settings.date);
+	// Don't convert the original_path to date, just get it as-is
+	const originalPath = fm?.[pathFrontmatterKey];
+	if (!originalPath || typeof originalPath !== "string") return;
+	const key = originalPath;
 	if (!key) return;
 
 	// For outside mode, the original_path is the path of the folder note (with extension)
