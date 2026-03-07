@@ -51,12 +51,13 @@
     "overridePaths": {
       "add": "Ajouter un chemin de remplacement",
       "dateFormat": {
-        "desc": "Vous pouvez utiliser la date dans le chemin, via les clés spéciales ctime ou mtime ou une propriété. \nVous pouvez utiliser [les formats moment](https://momentjs.com/docs/#/parsing/string-format/) ici pour définir le format en entrée et en sortie.",
+        "desc": "Vous pouvez utiliser la date dans le chemin, via les clés spéciales ctime ou mtime ou une propriété. \nVous pouvez utiliser [les formats moment](https://momentjs.com/docs/#/displaying/format/) ici pour définir le format en entrée et en sortie.",
         "input": {
-          "desc": "Format des dates utilisées dans les propriétés",
+          "desc": "Format des dates utilisées dans les propriétés. La date devrait être :",
           "title": "Format d'entrée"
         },
         "output": {
+          "ex": "La date ressemblera à ceci :",
           "title": "Format de sortie"
         },
         "title": "Format des dates"
