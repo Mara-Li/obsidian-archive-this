@@ -100,7 +100,7 @@ export enum ValidTransformation {
 	/**
 	 * No changement, but allow direct transform
 	 */
-	Transform = "transform"
+	Transform = "transform",
 }
 
 export type KeyNameInPath = {
