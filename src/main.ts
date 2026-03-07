@@ -423,7 +423,7 @@ export default class ArchiveThis extends Plugin {
 		const oldPath = file.path;
 		const newPath = this.getArchivePath(file);
 		try {
-			if (this.settings.overridePaths.length)
+			if (this.settings.overridePaths.length && file instanceof TFolder)
 				await setOriginalPath(file, this.app, this.settings);
 
 			// Handle outside folder note before moving the folder
