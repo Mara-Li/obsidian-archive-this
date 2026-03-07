@@ -35,3 +35,13 @@
 .archive-this input.error:active {
 	box-shadow: 0 0 0 1px var(--color-red);
 }
+
+.archive-this {
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	user-select: text;
+}
+
+.archive-this table {
+	border-collapse: collapse;
+}

@@ -4,7 +4,8 @@ import {
 	type OverridePath,
 	ValidTransformation,
 } from "../src/interfaces";
-import { parseKeys, replacePath } from "../src/utils";
+// noinspection ES6PreferShortImport
+import { parseKeys, replaceKeys, replacePath } from "../src/utils/replacePath";
 
 describe("replacePath", () => {
 	const overrides: OverridePath[] = [
@@ -104,5 +105,63 @@ describe("Parse the frontmatter to get the transform", () => {
 		expect(parse.get("key1")?.transform?.type).toBe(ValidTransformation.Lowercase);
 		expect(parse.get("key1")?.transform?.remplacement?.from).toBe(" ");
 		expect(parse.get("key1")?.transform?.remplacement?.to).toBe("-");
+	});
+});
+
+describe("Correct transformation of the frontmatter key", () => {
+	const frontmatter: Record<string, unknown> = {
+		title: "Value with spaces",
+		description: "Another value",
+		path: ["Item 1", "Item 2"],
+		object: {
+			nestedKey: "Nested Value",
+		},
+		transform: "Value*to*transform",
+		specialPath: "path/with/special/characters",
+	};
+	test("Slugify strict transformation", () => {
+		const transform = parseKeys("{{title|default:slugify_strict}}").get(
+			"title"
+		)?.transform;
+		expect(transform).toBeDefined();
+		const transformedValue = replaceKeys(
+			"{{title|default:slugify_strict}}",
+			new Map([["title", { transform }]]),
+			undefined,
+			frontmatter
+		);
+		expect(transformedValue).toBe("value-with-spaces");
+	});
+	test("Strict with from & to replacement", () => {
+		const transform = parseKeys("{{title|default:slugify_strict/_}}").get(
+			"title"
+		)?.transform;
+		expect(transform).toBeDefined();
+		const transformedValue = replaceKeys(
+			"{{title|default:slugify_strict/_}}",
+			new Map([["title", { transform }]]),
+			undefined,
+			frontmatter
+		);
+		expect(transformedValue).toBe("value_with_spaces");
+	});
+	test("{{transform:transform/*/_}}", () => {
+		const transform = parseKeys("{{transform:transform/*/_}}").get(
+			"transform"
+		)?.transform;
+		expect(transform).toBeDefined();
+		const transformedValue = replaceKeys(
+			"{{transform:transform/*/_}}",
+			new Map([["transform", { transform }]]),
+			undefined,
+			frontmatter
+		);
+		expect(transformedValue).toBe("Value_to_transform");
+	});
+	test("{{specialPath:transform/// /}}", () => {
+		//should throw an error
+		expect(() => parseKeys("{{specialPath:transform/// /}}")).toThrowError(
+			/Invalid transform format:/
+		);
 	});
 });

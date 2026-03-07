@@ -19,6 +19,7 @@
     "swap": "Archiver/restaurer"
   },
   "new": "nouveau dossier",
+  "refs": "La **valeur** des clés trouvées dans les propriétés peuvent subir des transformations selon l'utilisation des *tokens* suivants, sous forme de `{{maclé:montoken}}`\n\nLes *tokens* valides sont les suivants :\n\n|       Key        | Description                                                                                                                                                                                | Input                         | Output                   |\n| :--------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | ------------------------ |\n| `slugify_strict` | [Slugify](https://www.npmjs.com/package/slugify) de manière stricte (suppression de tous les caractères spéciaux et unicode) et remplacement des espaces par un caractère (par défaut `-`) | `Music title: アークナイツ`         | `music-title`            |\n|    `slugify`     | Moins strict que l'option précédente en conservant certains caractères unicodes.                                                                                                           | `café with unicode: 🦆 & 🖼️` | `cafe-with-unicode:-and` |\n|   `lowercase`    | Met simplement le texte en minuscule                                                                                                                                                       | `MON TEXT EN MAJUSCULE`       | `mon text en majuscule`  |\n|   `no_accent`    | Remplace les caractères accentuées par leur versions \"normales\"                                                                                                                            | `café`                        | `cafe`                   |\n|   `normalize`    | Met en minuscule et remplace les acccents                                                                                                                                                  | `MON SUPER CAFÉ`              | `mon super cafe`         |\n|   `capitalize`   | Met en majuscule chaque première lettre d'un texte                                                                                                                                         | `coucou mon chou`             | `Coucou Mon Chou`        |\n|   `uppercase`    | Met en majuscule toute la chaine de caractère                                                                                                                                              | `ma cafetière`                | `MA CAFETIÈRE`           |\n|   `transform`    | N'applique pas de transformation, mais permet le remplacement de caractère via la syntaxe `/entrée/sortie`                                                                                 | `**étoile**` (`/*/_`)         | `__étoile__`             |\n\n> [!important] Il n'est pas possible de combiner les transformation\n\n# Remplacement\nIl est aussi possible de spécifier des remplacements de textes pour la clé, en plaçant après le nom de la transformation, `/from/to` (le `/from` est à omettre lors de l'utilisation des options de slugify)\n\n> [!danger] Il n'est pas possible de transformer le caractère `/`.\n\n> [!example] Quelques exemples :\n>\n> | Clé                          | Source                       | Sortie                       |\n> | ---------------------------- | ---------------------------- | ---------------------------- |\n> | `{{title:slugify_strict/_}}` | `Mon titre avec des espaces` | `mon_titre_avec_des_espaces` |\n> | `{{title:transform/*/_/}}`   | `Valeur*à*transformer`       | `Valeur_à_transformer`       |\n",
   "restore": {
     "error": {
       "all_one": "Échec de la restauration de {{- file}}. Consulter la console pour plus d'informations.",
@@ -45,39 +46,44 @@
     "folder": "Dossier d'archive",
     "folderPlaceholder": "Archives",
     "overridePaths": {
-      "desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
-      "title": "Remplacer le chemin",
-      "info": "> [!info] \n> Il est possible de remplacer le chemin de destinations dans l'archive via l'utilisation de clé de propriétés, via la syntaxe \\`{{maclé}}\\`. \n> En cas d'absence de la clé, le chemin par défaut sera utilisé. \n> Il est cependant possible de fixer une valeur par défaut via la syntaxe \\`{{maclé|défaut}}\\`. L'utilisation des regex est totalement possible (ainsi que les remplacement via \\`$1\\` par exemple) en ajout des regex flags.\n> Des transformations des clés sont possibles en [suivant la syntaxe suivante](todo).\n\nÀ noter que les remplacements sont faits dans l'ordre de la liste. \n\nIl est possible d'utiliser les clés spéciales \\`{{size}}\\`, \\`{{mtime}}\\` et \\`{{ctime}}\\` qui se basent sur les stats du fichier/folder note source. \n\nLe format de ces clés est en ISO, mais il est possible de les formater via le champ \"Format de la date\" plus bas.",
-      "fm": "Clé de propriété pour le chemin original",
-      "folderNote": {
-        "title": "Folder note",
-        "desc": "Si la source est un dossier, alors le remplacement de chemin se basera sur une folder note pour sauvegarder le chemin original ainsi que les remplacements qui utilisent des clés de propriétés. Si cette fonction est désactivée, alors il n'y aura pas de remplacement de chemin sur les dossiers.",
-        "behavior": {
-          "title": "Comportement des notes de dossier",
-          "desc": "Une note de dossier peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
-          "inside": "Dans le dossier source",
-          "outside": "En dehors du dossier source",
-          "named": "Dans le dossier source avec un nom spécifique (index.md)"
-        }
-      },
+      "add": "Ajouter un chemin de remplacement",
       "dateFormat": {
-        "title": "Format des dates",
         "desc": "Vous pouvez utiliser la date dans le chemin, via les clés spéciales ctime ou mtime ou une propriété. \nVous pouvez utiliser [les formats moment](https://momentjs.com/docs/#/parsing/string-format/) ici pour définir le format en entrée et en sortie.",
         "input": {
-          "title": "Format d'entrée",
-          "desc": "Format des dates utilisées dans les propriétés"
+          "desc": "Format des dates utilisées dans les propriétés",
+          "title": "Format d'entrée"
         },
         "output": {
           "title": "Format de sortie"
-        }
+        },
+        "title": "Format des dates"
       },
-      "add": "Ajouter un chemin de remplacement",
       "delete": "Supprimer le chemin de remplacement",
-      "moveUp": "Monter",
+      "desc": "Modifie le chemin qui sera utilisé dans l'archive. Le chemin original sera sauvegardé dans une clé de propriété pour la commande de restauration.",
+      "fm": "Clé de propriété pour le chemin original",
+      "folderNote": {
+        "behavior": {
+          "desc": "Une note de dossier peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
+          "inside": "Dans le dossier source",
+          "named": "Dans le dossier source avec un nom spécifique (index.md)",
+          "outside": "En dehors du dossier source",
+          "title": "Comportement des notes de dossier"
+        },
+        "desc": "Si la source est un dossier, alors le remplacement de chemin se basera sur une folder note pour sauvegarder le chemin original ainsi que les remplacements qui utilisent des clés de propriétés. Si cette fonction est désactivée, alors il n'y aura pas de remplacement de chemin sur les dossiers.",
+        "named": {
+          "desc": "Le nom du fichier de la folder note à l'intérieur du dossier source.",
+          "title": "Nom de la folder note"
+        },
+        "title": "Folder note"
+      },
+      "info": "> [!info]\n> Le chemin de destination dans l’archive peut être personnalisé en utilisant des clés de propriétés avec la syntaxe `{{maclé}}`.\n> Si la clé n’existe pas, le chemin par défaut sera utilisé.\n>\n> Vous pouvez également définir une valeur par défaut avec la syntaxe `{{maclé|défaut}}`.\n>\n> Les expressions régulières sont entièrement supportées. Les remplacements (par exemple `$1`) peuvent être utilisés en combinaison avec les *regex flags*.\n>\n> Les valeurs peuvent aussi être transformées en utilisant les *tokens* décrits dans la section ci-dessous.\n\nLes remplacements sont appliqués **dans l’ordre de la liste**.\n\nDes clés spéciales sont également disponibles : `{{size}}`, `{{mtime}}` et `{{ctime}}`.  \nCes valeurs proviennent des statistiques du fichier ou de la *folder note* source.\n\nLes dates sont fournies au format **ISO** par défaut.  \nVous pouvez modifier ce format via le champ **« Format de la date »** ci-dessous.",
+      "invalidFlags": "Drapeaux invalides",
       "moveDown": "Descendre",
-      "sourcePath": "Chemin source",
+      "moveUp": "Monter",
+      "outputPath": "Chemin dans l'archive",
       "regexFlags": "Flags regex",
-      "invalidFlags": "Drapeaux invalides"
+      "sourcePath": "Chemin source",
+      "title": "Remplacer le chemin"
     }
   },
   "swap": {

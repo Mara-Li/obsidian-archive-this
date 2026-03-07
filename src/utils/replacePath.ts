@@ -19,6 +19,10 @@ export function parseKeys(replacement: string): Map<string, KeyNameInPath | unde
 		if (groups) {
 			let transform;
 			if (groups.transform) {
+				const groupTransform = groups.transform.split("/");
+				if (groupTransform.length > 3)
+					throw new Error(`Invalid transform format: ${groups.transform}`);
+
 				const [type, from, to] = groups.transform.split("/");
 				transform = {
 					type: type as ValidTransformation,
@@ -55,7 +59,7 @@ export function frontmatterKey(frontmatterKey: unknown, format: DateFormat) {
 	return undefined;
 }
 
-function transformKey(key: string, transformation?: KeyNameInPath) {
+export function transformKey(key: string, transformation?: KeyNameInPath) {
 	if (!transformation?.transform) return key;
 	switch (transformation.transform.type) {
 		case ValidTransformation.SlugifyStrict:
@@ -91,7 +95,7 @@ function replaceTheTransform(value: string, transformate: KeyNameInPath["transfo
 	return value;
 }
 
-function replaceKeys(
+export function replaceKeys(
 	replacement: string,
 	keys: Map<string, KeyNameInPath | undefined>,
 	stats?: FileStats,

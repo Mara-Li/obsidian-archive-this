@@ -19,6 +19,7 @@
     "swap": "Archive/restore"
   },
   "new": "new folder",
+  "refs": "The **value** of keys found in the properties can undergo transformations depending on the use of the following *tokens*, using the syntax `{{mykey:mytoken}}`.\n\nThe valid *tokens* are the following:\n\n|       Key        | Description                                                                                                                                                                                | Input                         | Output                   |\n| :--------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | ------------------------ |\n| `slugify_strict` | Strict [Slugify](https://www.npmjs.com/package/slugify) (removes all special and Unicode characters) and replaces spaces with a character (default `-`)                                   | `Music title: アークナイツ`         | `music-title`            |\n|    `slugify`     | Less strict than the previous option, keeping some Unicode characters.                                                                                                                    | `café with unicode: 🦆 & 🖼️` | `cafe-with-unicode:-and` |\n|   `lowercase`    | Simply converts the text to lowercase                                                                                                                                                      | `MON TEXT EN MAJUSCULE`       | `mon text en majuscule`  |\n|   `no_accent`    | Replaces accented characters with their \"normal\" counterparts                                                                                                                             | `café`                        | `cafe`                   |\n|   `normalize`    | Converts to lowercase and removes accents                                                                                                                                                  | `MON SUPER CAFÉ`              | `mon super cafe`         |\n|   `capitalize`   | Capitalizes the first letter of each word                                                                                                                                                  | `coucou mon chou`             | `Coucou Mon Chou`        |\n|   `uppercase`    | Converts the entire string to uppercase                                                                                                                                                    | `ma cafetière`                | `MA CAFETIÈRE`           |\n|   `transform`    | Does not apply any transformation but allows character replacement using the syntax `/input/output`                                                                                      | `**étoile**` (`/*/_`)         | `__étoile__`             |\n\n> [!IMPORTANT] Transformations cannot be combined.\n\n# Replacement\n\nIt is also possible to specify text replacements for the key by adding `/from/to` after the transformation name (`/from` should be omitted when using slugify options).\n\n> [!DANGER] It is not possible to transform the `/` character.\n\n> [!EXAMPLE] Some examples:\n>\n> | Key                          | Source                       | Output                       |\n> | ---------------------------- | ---------------------------- | ---------------------------- |\n> | `{{title:slugify_strict/_}}` | `Mon titre avec des espaces` | `mon_titre_avec_des_espaces` |\n> | `{{title:transform/*/_/}}`   | `Valeur*à*transformer`       | `Valeur_à_transformer`       |\n",
   "restore": {
     "error": {
       "all_one": "Failed to restore {{- file}}. Check console for more informations.",
@@ -45,44 +46,44 @@
     "folder": "Archive folder",
     "folderPlaceholder": "Archives",
     "overridePaths": {
-      "desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
-      "title": "Override path",
-      "info": "> [!info] \n\n> It is possible to replace the destination path in the archive via the use of properties keys, via the syntax \\`{{key}}\\`. \n> If the key is missing, the default path will be used. \n> It is however possible to set a default value via the syntax \\`{{key|default}}\\`. \nThe use of regex is completely possible (as well as replacement via \\`$1\\` for example) by adding regex flags.\n> Key's transformation are possible by following the [syntax](todo). \n\nNote that the replacement are done in the order of the list. \n\nIt is possible to use the special keys \\`{{size}}\\`, \\`{{mtime}}\\` and \\`{{ctime}}\\` which are based on the stats of the source file/folder note. \n\nThe format of these keys is in ISO, but it is possible to format them via the \"Date format\" field below.",
-      "fm": "Frontmatter key for original path",
-      "folderNote": {
-        "title": "Folder note",
-        "desc": "If the source is a folder, the path replacement will be based on a folder note for the original path saving and the frontmatter key.\n\nIf disabled, they won't be any replacement for folders path.",
-        "behavior": {
-          "title": "Folder note behavior",
-          "desc": "Une folder note peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
-          "inside": "Inside the source folder",
-          "outside": "Outside the source folder",
-          "named": "Inside the source folder with a specific name (index.md)"
-        },
-        "named": {
-          "title": "Folder note name",
-          "desc": "Le nom du fichier de la folder note à l'intérieur du dossier source. Par défaut index.md"
-        }
-      },
+      "add": "Add override path",
       "dateFormat": {
-        "title": "Date format",
         "desc": "You can use date in the path, via the ctime or mtime special keys or a property. You can use [moment format](https://momentjs.com/docs/#/parsing/string-format/) here to define the format in input and output. ",
         "input": {
-          "title": "Input format",
-          "desc": "Date format used in the frontmatter"
+          "desc": "Date format used in the frontmatter",
+          "title": "Input format"
         },
         "output": {
           "title": "Output format"
-        }
+        },
+        "title": "Date format"
       },
-      "add": "Add override path",
       "delete": "Delete override path",
-      "moveUp": "Move up",
+      "desc": "Modify the path that will be used in the archive. The original path will be set in a frontmatter key for the restoration command.",
+      "fm": "Frontmatter key for original path",
+      "folderNote": {
+        "behavior": {
+          "desc": "Une folder note peut se trouver à la racine du dossier source, à son extérieur ou à l'intérieur avec un nom spécifique (index.md par exemple).",
+          "inside": "Inside the source folder",
+          "named": "Inside the source folder with a specific name (index.md)",
+          "outside": "Outside the source folder",
+          "title": "Folder note behavior"
+        },
+        "desc": "If the source is a folder, the path replacement will be based on a folder note for the original path saving and the frontmatter key.\n\nIf disabled, they won't be any replacement for folders path.",
+        "named": {
+          "desc": "The name in the folder note, inside source folder.",
+          "title": "Folder note name"
+        },
+        "title": "Folder note"
+      },
+      "info": "> [!INFO]\n> The destination path in the archive can be customized using property keys with the syntax `{{mykey}}`.\n> If the key does not exist, the default path will be used.\n>\n> You can also define a default value using the syntax `{{mykey|default}}`.\n>\n> Regular expressions are fully supported. Replacements (for example `$1`) can be used together with *regex flags*.\n>\n> Values can also be transformed using the *tokens* described in the section below.\n\nReplacements are applied **in the order they appear in the list**.\n\nSpecial keys are also available: `{{size}}`, `{{mtime}}`, and `{{ctime}}`.  \nThese values come from the file or source *folder note* statistics.\n\nDates are provided in **ISO format** by default.  \nYou can change this format using the **\"Date format\"** field below.",
+      "invalidFlags": "Invalid flags",
       "moveDown": "Move down",
-      "sourcePath": "Source path",
+      "moveUp": "Move up",
       "outputPath": "Archive path",
       "regexFlags": "Regex flags",
-      "invalidFlags": "Invalid flags"
+      "sourcePath": "Source path",
+      "title": "Override path"
     }
   },
   "swap": {

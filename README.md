@@ -2,7 +2,7 @@
 
 Move files and folders to the archive while keeping the hierarchy.
 
-Some part of the code was taken from [para-shortcuts](https://github.com/gOATiful/para-shortcuts)
+Some parts of the code were taken from [para-shortcuts](https://github.com/gOATiful/para-shortcuts)
 
 ## 🗜️ Usage
 
@@ -10,107 +10,106 @@ The plugin adds commands for:
 - File menu (right-click menu in the explorer, works for both folders and files)
 - File**s** menu (multiple selected files/folders)
 
-The plugin automatically detects if the files or folders are in the archive folder or not:
-- If they are, the command allows you to restore from the archive
+The plugin automatically detects whether the files or folders are in the archive folder or not:
+- If they are, the command allows you to restore them from the archive
 - If not, the command allows you to archive them.
 
 > [!INFO]
-> When multiple files are selected and some are in the archive and others are not, the plugin will intelligently archive or restore on a per-file basis.
+> When multiple files are selected and some are in the archive while others are not, the plugin will intelligently archive or restore them on a per-file basis.
 
 ## ⚙️ Settings
 
 Some settings are available in the settings tab:
 1. **Archive folder**: It will be created if it does not exist when using the archive command.
-2. **Delete when empty**: Delete the parent folder(s) of the moved file if they are empty. Separate options for both restore & archiving.
-3. **Overriding paths** : Allow to change the result path instead of copying the original tree. For folder, it will use the properties of the folder note. Includes:
-    - ***Frontmatter key for original path** 
-    - **Folder note settings** with behavior (inside, outside, inside with specific name)
+2. **Delete when empty**: Delete the parent folder(s) of the moved file if they are empty. Separate options are available for both restoring and archiving.
+3. **Overriding paths**: Allows changing the resulting path instead of copying the original tree. For folders, it will use the properties of the folder note. Includes:
+    - **Frontmatter key for original path**
+    - **Folder note settings** with behavior (inside, outside, inside with a specific name)
     - **Date format** (using moment)
-    - And adding new overriding paths
+    - Adding new overriding paths
 
 ### Overriding path
 
-Allow to change the path in the archive. You can use the frontmatter key to customize this, with encapsulate the value between `{{}}` (ie `{{key}}). Theses keys can have:
-- A transformation (see below): At the end, separated from the name with `:`, ie `{{key:transformation}}
-- A default value: Before the transformation (if any), separated from the name with `|` like `{{key|default}}`
-- A replacement : Useful when you want to replace a specific character in the key by another one. It should be used with the transformation as `{{key:transformation/from/to}}`
+Allows changing the path in the archive. You can use frontmatter keys to customize this by encapsulating the value between `{{}}` (e.g. `{{key}}`). These keys can have:
+- A transformation (see below): at the end, separated from the name with `:`, e.g. `{{key:transformation}}`
+- A default value: before the transformation (if any), separated from the name with `|`, like `{{key|default}}`
+- A replacement: useful when you want to replace a specific character in the key with another one. It should be used with the transformation as `{{key:transformation/from/to}}`
 
-It exists also special keys that are taken from the file data instead of the frontmatter :
+There are also special keys that are taken from the file data instead of the frontmatter:
 - `ctime`: file creation time
 - `mtime`: file last modification time
 - `size`: file size
 
 When archived, the plugin will automatically add a key in the frontmatter that contains the original path. You can customize this with **frontmatter key for original path**.
 
-Only the keys that can be stringified will be used. 
+Only keys that can be stringified will be used.
 
 > [!NOTE]
-> For list, the value will be joined by `/`
+> For lists, the value will be joined using `/`.
 
 #### Folder note
 
-When moving a folder, you can't get the file stats and frontmatter. To support the overriding, you need to use a folder note, that can be :
-- Inside with the same name of the moved folder,
-- Outside with the same name of the adjacent folder
-- Inside, but with a specific name (for example, `index.md`).
+When moving a folder, you cannot access file stats or frontmatter. To support overriding, you need to use a folder note, which can be:
+- Inside the folder with the same name as the moved folder
+- Outside the folder with the same name as the adjacent folder
+- Inside the folder but with a specific name (for example, `index.md`)
 
-Theses folder notes will also get the `original path` key for restoration.
+These folder notes will also receive the `original path` key for restoration.
 
-Disabled, the default tree will be used.
+If disabled, the default tree will be used.
 
 #### Date format
 
-As you maybe want a specific date format (from the frontmatter or special date key), you can customize this using the [moment format](https://momentjs.com/docs/#/parsing/string-format/).
-For convainience, you can set the input AND the output, so moment can safely parse the date.
+If you want a specific date format (from the frontmatter or special date keys), you can customize it using the [moment format](https://momentjs.com/docs/#/parsing/string-format/).
+
+For convenience, you can set both the input AND the output format so that moment can safely parse the date.
 
 #### Transformation
 
-Only some transformation can be used. Theses transformation are specific value in the key. Valid keys are:
-- `slugify_strict` : [slugify](https://www.npmjs.com/package/slugify) strictly the frontmatter value,
-- `slugify` : Less strict
+Only certain transformations can be used. These transformations are specific values in the key. Valid values are:
+- `slugify_strict`: strictly [slugify](https://www.npmjs.com/package/slugify) the frontmatter value
+- `slugify`: less strict
 - `lowercase`
-- `no_accent` : Replace the accent to their "normal" counterpart (`café` -> `cafe`)
-- `normalize` : Lowercase + remove accents
-- `capitalize` : Uppercase the first letter of a string
-- `uppercase` : Uppercase all the string
-- `transform` : Do not transform but allow to use a transformation in the form of `/from/to` (ie `transform/ /-` that will replace all space to dash)
+- `no_accent`: replace accented characters with their normal counterparts (`café` -> `cafe`)
+- `normalize`: lowercase + remove accents
+- `capitalize`: uppercase the first letter of the string
+- `uppercase`: uppercase the entire string
+- `transform`: do not transform but allow using a replacement in the form `/from/to` (e.g. `transform/ /-` replaces all spaces with dashes)
 
 ### Overriding usage
 
-After click on the "Add override path", a new line is added in the settings, composed by:
-- **A trash** : to delete the line
-- **An up** and **down** arrow, to change the order of the line
-- **A source** input, that is the path of the file to change,
-- **Archive** input, that will be the path in the archive
-- **Regex flags** input, used if you want to set the source path as a regex.
+After clicking on "Add override path", a new line is added in the settings, composed of:
+- **A trash icon**: to delete the line
+- **Up** and **down** arrows: to change the order of the line
+- **A source** input: the path of the file to change
+- **Archive** input: the resulting path in the archive
+- **Regex flags** input: used if you want to treat the source path as a regex.
 
-> [!warning]
-> The overriding path is used from up to down, and all overriding are applied in order (if matching)
+> [!WARNING]
+> Overriding paths are applied from top to bottom, and all overrides are applied in order (if matching).
 > If, at the end, a `{{key}}` remains, the default path will be returned.
 
 ## 📥 Installation
 
 - [ ] From Obsidian's community plugins
 - [x] Using BRAT with `https://github.com/Mara-Li/obsidian-archive-this`
-- [x] From the release page: 
+- [x] From the release page:
     - Download the latest release
-    - Unzip `archive-this.zip` in `.obsidian/plugins/` path
+    - Unzip `archive-this.zip` into the `.obsidian/plugins/` folder
     - In Obsidian settings, reload the plugin
     - Enable the plugin
-
 
 ### 🎼 Languages
 
 - [x] English
-- [ ] French
+- [x] French
 
 To add a translation:
 1. Fork the repository
-2. Add the translation in the `src/i18n/locales` folder with the name of the language (ex: `fr.json`). 
-    - You can get your locale language from Obsidian using [obsidian translation](https://github.com/obsidianmd/obsidian-translations) or using the commands (in templater for example) : `<% tp.obsidian.moment.locale() %>`
-    - Copy the content of the [`en.json`](./src/i18n/locales/en.json) file in the new file
+2. Add the translation in the `src/i18n/locales` folder with the name of the language (e.g. `fr.json`)
+    - You can get your locale language from Obsidian using [obsidian translation](https://github.com/obsidianmd/obsidian-translations) or using commands (in Templater for example): `<% tp.obsidian.moment.locale() %>`
+    - Copy the content of the [`en.json`](./src/i18n/locales/en.json) file into the new file
     - Translate the content
-3. Edit `i18n/i18next.ts` :
+3. Edit `i18n/i18next.ts`:
     - Add `import * as <lang> from "./locales/<lang>.json";`
-    - Edit the `ressource` part with adding : `<lang> : {translation: <lang>}`
-
+    - Edit the `resource` part by adding: `<lang>: {translation: <lang>}`

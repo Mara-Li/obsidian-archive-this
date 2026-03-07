@@ -11,6 +11,7 @@ import {
 import { FolderSuggester } from "./folder_suggester";
 import type { ArchiveThisSettings } from "./interfaces";
 import type ArchiveThis from "./main";
+import { RefArchiveThisModal } from "./refTransform";
 
 export class ArchiveThisSettingTab extends PluginSettingTab {
 	plugin: ArchiveThis;
@@ -67,13 +68,14 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		const mdSettings = new Setting(containerEl);
 		mdSettings.setClass("md-info");
+		mdSettings.setClass("markdown-rendered");
 		const component = new Component();
 		component.load();
 		const markdown = dedent(i18next.t("settings.overridePaths.info"));
 		await MarkdownRenderer.render(this.app, markdown, mdSettings.infoEl, "", component);
 
 		new Setting(containerEl)
-			.setName(i18next.t('settings.overridePaths.fm'))
+			.setName(i18next.t("settings.overridePaths.fm"))
 			.addText((text) =>
 				text
 					.setValue(this.settings.originalPathFrontmatterKey)
@@ -86,10 +88,8 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		//Folder note settings
 		new Setting(containerEl)
-			.setName(i18next.t('settings.overridePaths.folderNote.title'))
-			.setDesc(
-				i18next.t('settings.overridePaths.folderNote.desc')
-			)
+			.setName(i18next.t("settings.overridePaths.folderNote.title"))
+			.setDesc(i18next.t("settings.overridePaths.folderNote.desc"))
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.useFolderNote.enable).onChange(async (val) => {
 					this.settings.useFolderNote.enable = val;
@@ -100,14 +100,18 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		if (this.settings.useFolderNote.enable) {
 			new Setting(containerEl)
-				.setName(i18next.t('settings.overridePaths.folderNote.behavior.title'))
-				.setDesc(
-					i18next.t('settings.overridePaths.folderNote.behavior.desc')
-				)
+				.setName(i18next.t("settings.overridePaths.folderNote.behavior.title"))
+				.setDesc(i18next.t("settings.overridePaths.folderNote.behavior.desc"))
 				.addDropdown((dropdown) =>
 					dropdown
-						.addOption("inside", i18next.t('settings.overridePaths.folderNote.behavior.inside'))
-						.addOption("outside", i18next.t('settings.overridePaths.folderNote.behavior.outside'))
+						.addOption(
+							"inside",
+							i18next.t("settings.overridePaths.folderNote.behavior.inside")
+						)
+						.addOption(
+							"outside",
+							i18next.t("settings.overridePaths.folderNote.behavior.outside")
+						)
 						.addOption(
 							"named",
 							i18next.t("settings.overridePaths.folderNote.behavior.named")
@@ -125,9 +129,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			if (this.settings.useFolderNote.mode === "named") {
 				new Setting(containerEl)
 					.setName(i18next.t("settings.overridePaths.folderNote.named.title"))
-					.setDesc(
-						i18next.t("settings.overridePaths.folderNote.named.desc")
-					)
+					.setDesc(i18next.t("settings.overridePaths.folderNote.named.desc"))
 					.addText((text) =>
 						text
 							.setValue(this.settings.useFolderNote.name)
@@ -140,43 +142,64 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			}
 		}
 
-		const sett = new Setting(containerEl)
-			.setName(i18next.t("settings.overridePaths.dateFormat.title"))
-		await MarkdownRenderer.render(this.app, dedent(i18next.t("settings.overridePaths.dateFormat.desc")), sett.descEl, "", component);
+		const sett = new Setting(containerEl).setName(
+			i18next.t("settings.overridePaths.dateFormat.title")
+		);
+		sett.descEl.addClass("markdown-rendered");
+		await MarkdownRenderer.render(
+			this.app,
+			dedent(i18next.t("settings.overridePaths.dateFormat.desc")),
+			sett.descEl,
+			"",
+			component
+		);
 
-		new Setting(containerEl).setName(i18next.t("settings.overridePaths.dateFormat.input.title")).setDesc(i18next.t("settings.overridePaths.dateFormat.input.desc")).setClass("padding").addText((text) =>
-			text
-				.setValue(this.settings.date.input)
-				.setPlaceholder("YYYY-MM-DD")
-				.onChange(async (val) => {
-					this.settings.date.input = val.trim();
-					await this.plugin.saveSettings();
-				})
-		);
-		new Setting(containerEl).setName(i18next.t("settings.overridePaths.dateFormat.output.title")).setClass("padding").addText((text) =>
-			text
-				.setValue(this.settings.date.output)
-				.setPlaceholder("YYYY-MM-DD")
-				.onChange(async (val) => {
-					this.settings.date.output = val.trim();
-					await this.plugin.saveSettings();
-				})
-		);
+		new Setting(containerEl)
+			.setName(i18next.t("settings.overridePaths.dateFormat.input.title"))
+			.setDesc(i18next.t("settings.overridePaths.dateFormat.input.desc"))
+			.setClass("padding")
+			.addText((text) =>
+				text
+					.setValue(this.settings.date.input)
+					.setPlaceholder("YYYY-MM-DD")
+					.onChange(async (val) => {
+						this.settings.date.input = val.trim();
+						await this.plugin.saveSettings();
+					})
+			);
+		new Setting(containerEl)
+			.setName(i18next.t("settings.overridePaths.dateFormat.output.title"))
+			.setClass("padding")
+			.addText((text) =>
+				text
+					.setValue(this.settings.date.output)
+					.setPlaceholder("YYYY-MM-DD")
+					.onChange(async (val) => {
+						this.settings.date.output = val.trim();
+						await this.plugin.saveSettings();
+					})
+			);
 
 		//add button plus
-		new Setting(containerEl).addButton((btn) =>
-			btn
-				.setButtonText(i18next.t("settings.overridePaths.add"))
-				.setCta()
-				.onClick(() => {
-					this.settings.overridePaths.push({
-						sourcePath: "",
-						archivePath: "",
-						regexFlags: "g",
-					});
-					this.display();
-				})
-		);
+		new Setting(containerEl)
+			.addButton((btn) =>
+				btn
+					.setButtonText(i18next.t("settings.overridePaths.add"))
+					.setCta()
+					.onClick(() => {
+						this.settings.overridePaths.push({
+							sourcePath: "",
+							archivePath: "",
+							regexFlags: "g",
+						});
+						this.display();
+					})
+			)
+			.addButton((btn) =>
+				btn
+					.setButtonText("Open reference")
+					.onClick(() => new RefArchiveThisModal(this.app).open())
+			);
 
 		this.settings.overridePaths.forEach((overridePath, index) => {
 			new Setting(containerEl)
@@ -224,9 +247,12 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 						.onChange(async (val) => {
 							this.settings.overridePaths[index].sourcePath = val.trim();
 							await this.plugin.saveSettings();
-						})
+						});
 					text.inputEl.addClass("width-100");
-					setTooltip(text.inputEl, i18next.t("settings.overridePaths.sourcePath"), { placement: "bottom", delay: 0 });
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.sourcePath"), {
+						placement: "bottom",
+						delay: 0,
+					});
 				})
 				.addText((text) => {
 					text
@@ -237,26 +263,31 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						});
 					text.inputEl.addClass("width-100");
-					setTooltip(text.inputEl, i18next.t("settings.overridePaths.outputPath"), { placement: "bottom", delay: 0 });
-
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.outputPath"), {
+						placement: "bottom",
+						delay: 0,
+					});
 				})
 				.addText((text) => {
 					text
 						.setPlaceholder(i18next.t("settings.overridePaths.regexFlags"))
 						.setValue(overridePath.regexFlags).inputEl.onblur = async () => {
-							const value = text.getValue();
-							const valid = this.verifyValidFlags(value);
-							if (!valid) {
-								text.inputEl.addClass("error");
-								this.plugin.noticeError(i18next.t("settings.overridePaths.invalidFlags"));
-							} else {
-								text.inputEl.removeClass("error");
-								this.settings.overridePaths[index].regexFlags = value.trim();
-								await this.plugin.saveSettings();
-							}
-						};
+						const value = text.getValue();
+						const valid = this.verifyValidFlags(value);
+						if (!valid) {
+							text.inputEl.addClass("error");
+							this.plugin.noticeError(i18next.t("settings.overridePaths.invalidFlags"));
+						} else {
+							text.inputEl.removeClass("error");
+							this.settings.overridePaths[index].regexFlags = value.trim();
+							await this.plugin.saveSettings();
+						}
+					};
 					text.inputEl.addClass("width-25");
-					setTooltip(text.inputEl, i18next.t("settings.overridePaths.regexFlags"), { placement: "bottom", delay: 0 });
+					setTooltip(text.inputEl, i18next.t("settings.overridePaths.regexFlags"), {
+						placement: "bottom",
+						delay: 0,
+					});
 				});
 		});
 		component.unload();
