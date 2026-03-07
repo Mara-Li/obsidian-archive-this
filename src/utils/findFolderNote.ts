@@ -1,6 +1,6 @@
 import { type App, TFile, TFolder } from "obsidian";
+import type { ArchiveThisSettings } from "../interfaces";
 import { getFrontmatterData } from "./frontmatterData";
-import type { ArchiveThisSettings } from "./interfaces";
 import { replacePath } from "./replacePath";
 
 export function getFolderNote(

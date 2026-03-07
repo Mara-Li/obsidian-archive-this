@@ -7,16 +7,16 @@ import {
 	TFile,
 	TFolder,
 } from "obsidian";
-import { renameFolderNote } from "./findFolderNote";
+import { resources, translationLanguage } from "./i18n";
+import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
+import { ArchiveThisSettingTab } from "./settings";
 import {
 	getFrontmatterForArchive,
 	getOriginalPathForRestore,
+	renameFolderNote,
+	replacePath,
 	setOriginalPath,
-} from "./frontmatterData";
-import { resources, translationLanguage } from "./i18n";
-import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
-import { replacePath } from "./replacePath";
-import { ArchiveThisSettingTab } from "./settings";
+} from "./utils";
 
 export default class ArchiveThis extends Plugin {
 	settings!: ArchiveThisSettings;

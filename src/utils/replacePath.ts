@@ -5,7 +5,7 @@ import {
 	type KeyNameInPath,
 	type OverridePath,
 	ValidTransformation,
-} from "./interfaces";
+} from "../interfaces";
 import "uniformize";
 import slugify from "slugify";
 
@@ -81,7 +81,7 @@ function transformKey(key: string, transformation?: KeyNameInPath) {
 		case ValidTransformation.Uppercase:
 			return replaceTheTransform(key.toUpperCase(), transformation.transform);
 		case ValidTransformation.Transform:
-			return replaceTheTransform(key, transformation.transform)
+			return replaceTheTransform(key, transformation.transform);
 	}
 }
 

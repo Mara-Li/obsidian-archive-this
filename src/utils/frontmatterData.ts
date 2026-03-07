@@ -5,8 +5,8 @@ import {
 	TFile,
 	TFolder,
 } from "obsidian";
+import type { ArchiveThisSettings } from "../interfaces";
 import { getFolderNote } from "./findFolderNote";
-import type { ArchiveThisSettings } from "./interfaces";
 import { frontmatterKey } from "./replacePath";
 
 export function getFrontmatterData(app: App, file: TFile) {
