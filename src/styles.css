@@ -45,3 +45,7 @@
 .archive-this table {
 	border-collapse: collapse;
 }
+
+.archive-this-modal .modal {
+	--dialog-width: 60%;
+}

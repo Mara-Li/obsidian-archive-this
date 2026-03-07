@@ -45,6 +45,9 @@
     },
     "folder": "Archive folder",
     "folderPlaceholder": "Archives",
+    "overridePath": {
+      "ref": "Open references"
+    },
     "overridePaths": {
       "add": "Add override path",
       "dateFormat": {

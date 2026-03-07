@@ -13,7 +13,8 @@ export class RefArchiveThisModal extends Modal {
 
 	async onOpen() {
 		const { contentEl } = this;
-		contentEl.addClasses(["archive-this", "markdown-rendered"]);
+		this.containerEl.addClass("archive-this", "archive-this-modal");
+		contentEl.addClasses(["markdown-rendered"]);
 		this.setTitle("Archive This - References");
 		const component = new Component();
 		component.load();

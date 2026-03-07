@@ -197,7 +197,7 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			)
 			.addButton((btn) =>
 				btn
-					.setButtonText("Open reference")
+					.setButtonText(i18next.t("settings.overridePath.ref"))
 					.onClick(() => new RefArchiveThisModal(this.app).open())
 			);
 

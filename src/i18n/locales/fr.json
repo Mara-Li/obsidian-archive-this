@@ -45,6 +45,9 @@
     },
     "folder": "Dossier d'archive",
     "folderPlaceholder": "Archives",
+    "overridePath": {
+      "ref": "Ouvrir les références"
+    },
     "overridePaths": {
       "add": "Ajouter un chemin de remplacement",
       "dateFormat": {
