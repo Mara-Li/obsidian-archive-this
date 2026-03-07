@@ -126,14 +126,17 @@ export default class ArchiveThis extends Plugin {
 						item
 							.setIcon("package")
 							.setTitle(i18next.t("cmd.swap"))
-							.onClick(async () => await this.swapFile(files));
+							.onClick(async () => {
+								const res = await this.swapFile(files);
+								this.checkSwapFile(files, res);
+							});
 					});
 				}
 			})
 		);
 	}
 
-	archiveCheck(files: TAbstractFile[], res: boolean[]) {
+	private archiveCheck(files: TAbstractFile[], res: boolean[]) {
 		const file = files.map((f) => this.getBasename(f)).join(", ");
 		if (res.every((r) => r))
 			this.noticeSuccess(
@@ -157,7 +160,7 @@ export default class ArchiveThis extends Plugin {
 		}
 	}
 
-	restoreCheck(files: TAbstractFile[], res: boolean[]) {
+	private restoreCheck(files: TAbstractFile[], res: boolean[]) {
 		if (res.every((r) => r))
 			this.noticeSuccess(
 				i18next.t("restore.success.all", {
@@ -179,7 +182,7 @@ export default class ArchiveThis extends Plugin {
 	 * Move in or out depending of the emplacement of the file
 	 * @param files {TAbstractFile[]}
 	 */
-	async swapFile(files: TAbstractFile[]) {
+	private async swapFile(files: TAbstractFile[]) {
 		return await Promise.all(
 			files.map((file) => {
 				if (this.isInArchive(file)) return this.restoreFromArchive(file);
@@ -188,7 +191,7 @@ export default class ArchiveThis extends Plugin {
 		);
 	}
 
-	async checkSwapFile(files: TAbstractFile[], res: boolean[]) {
+	private checkSwapFile(files: TAbstractFile[], res: boolean[]) {
 		const file = files.map((f) => this.getBasename(f)).join(", ");
 		const nbInError = res.filter((r) => !r).length;
 		const nbInSuccess = res.filter((r) => r).length;
@@ -303,9 +306,8 @@ export default class ArchiveThis extends Plugin {
 				file instanceof TFolder &&
 				this.settings.useFolderNote.enable &&
 				this.settings.useFolderNote.mode === "outside"
-			) {
+			)
 				await this.restoreOutsideFolderNote(file, newPath);
-			}
 
 			await this.moveFileAndCreateFolder(file, newPath);
 			if (this.settings.deleteWhenEmpty.inArchive) await this.deleteWhenEmpty(oldParent);

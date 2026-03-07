@@ -93,10 +93,9 @@ export function getOriginalPathForRestore(
 	// For outside mode, the original_path is the path of the folder note (with extension)
 	// We need to extract the folder path by removing the extension
 	// Example: "truc/machin/machin2.md" → folder is "truc/machin/machin2"
-	if (settings.useFolderNote.mode === "outside" && key.match(/\.(.*?)$/)) {
+	if (settings.useFolderNote.mode === "outside" && key.match(/\.(.*?)$/))
 		// Remove the extension to get the folder path
 		return key.replace(/\.[^.]+$/, "");
-	}
 
 	// For inside/named modes, if the key has an extension, remove the last part (filename)
 	if (key.match(/\.(.*?)$/)) {
