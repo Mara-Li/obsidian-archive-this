@@ -51,12 +51,13 @@
     "overridePaths": {
       "add": "Add override path",
       "dateFormat": {
-        "desc": "You can use date in the path, via the ctime or mtime special keys or a property. You can use [moment format](https://momentjs.com/docs/#/parsing/string-format/) here to define the format in input and output. ",
+        "desc": "You can use date in the path, via the ctime or mtime special keys or a property. You can use [moment format](https://momentjs.com/docs/#/displaying/format/) here to define the format in input and output. ",
         "input": {
-          "desc": "Date format used in the frontmatter",
+          "desc": "Date format used in the frontmatter. The date will should be:",
           "title": "Input format"
         },
         "output": {
+          "ex": "Your date will looks like this:",
           "title": "Output format"
         },
         "title": "Date format"

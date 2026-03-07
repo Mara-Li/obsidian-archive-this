@@ -9,7 +9,7 @@ import {
 	setTooltip,
 } from "obsidian";
 import { FolderSuggester } from "./folder_suggester";
-import type { ArchiveThisSettings } from "./interfaces";
+import { type ArchiveThisSettings, DEFAULT_SETTINGS } from "./interfaces";
 import type ArchiveThis from "./main";
 import { RefArchiveThisModal } from "./refTransform";
 
@@ -154,31 +154,40 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 			component
 		);
 
+		const inputDesc = document.createDocumentFragment();
+		inputDesc.appendText(`${i18next.t("settings.overridePaths.dateFormat.input.desc")} `);
+		const formatEl = inputDesc.createEl("b", "u-pop");
+
 		new Setting(containerEl)
 			.setName(i18next.t("settings.overridePaths.dateFormat.input.title"))
-			.setDesc(i18next.t("settings.overridePaths.dateFormat.input.desc"))
+			.setDesc(inputDesc)
 			.setClass("padding")
-			.addText((text) =>
+			.addMomentFormat((text) =>
 				text
 					.setValue(this.settings.date.input)
-					.setPlaceholder("YYYY-MM-DD")
+					.setDefaultFormat("YYYY-MM-DD")
+					.setSampleEl(formatEl)
 					.onChange(async (val) => {
 						this.settings.date.input = val.trim();
 						await this.plugin.saveSettings();
 					})
 			);
+		const dateDesc = document.createDocumentFragment();
+		dateDesc.appendText(`${i18next.t("settings.overridePaths.dateFormat.output.ex")} `);
+		const sampleEl = dateDesc.createEl("b", "u-pop");
 		new Setting(containerEl)
 			.setName(i18next.t("settings.overridePaths.dateFormat.output.title"))
+			.setDesc(dateDesc)
 			.setClass("padding")
-			.addText((text) =>
-				text
-					.setValue(this.settings.date.output)
-					.setPlaceholder("YYYY-MM-DD")
+			.addMomentFormat((cb) => {
+				cb.setValue(this.settings.date.output)
+					.setSampleEl(sampleEl)
 					.onChange(async (val) => {
 						this.settings.date.output = val.trim();
 						await this.plugin.saveSettings();
 					})
-			);
+					.setDefaultFormat(DEFAULT_SETTINGS.date.output);
+			});
 
 		//add button plus
 		new Setting(containerEl)
