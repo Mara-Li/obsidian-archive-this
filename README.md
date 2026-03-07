@@ -14,7 +14,7 @@ The plugin automatically detects whether the files or folders are in the archive
 - If they are, the command allows you to restore them from the archive
 - If not, the command allows you to archive them.
 
-> [!INFO]
+> [!NOTE]  
 > When multiple files are selected and some are in the archive while others are not, the plugin will intelligently archive or restore them on a per-file basis.
 
 ## ⚙️ Settings
