@@ -1,6 +1,6 @@
 {
 	"id": "archive-this",
-	"name": "Archive This",
+	"name": "Archive This!",
 	"version": "1.1.0",
 	"minAppVersion": "1.5.12",
 	"description": "Move to archive file(s) and folder(s) while keeping the hierarchy.",
