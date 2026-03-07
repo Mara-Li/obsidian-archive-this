@@ -1,9 +1,9 @@
 import { builtinModules as builtins } from "node:module";
+import { loadEnvFile } from "node:process";
 import { Command } from "commander";
 import esbuild from "esbuild";
 import * as fs from "fs";
 import * as path from "path";
-import { loadEnvFile } from "process";
 import manifest from "./manifest.json" with { type: "json" };
 import packageJson from "./package.json" with { type: "json" };
 
@@ -56,7 +56,7 @@ function i18nRefPlugin() {
 
 					const markdown = fs.readFileSync(mdPath, "utf8");
 					const json = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
-
+					if (json.refs === markdown) continue;
 					json.refs = markdown;
 
 					fs.writeFileSync(jsonPath, `${JSON.stringify(json, null, 2)}\n`);
@@ -150,6 +150,9 @@ async function buildPlugin() {
 
 	const entryPoints = ["src/main.ts"];
 	if (isStyled) entryPoints.push("src/styles.css");
+	entryPoints.push(
+		...(manifest.i18n?.locales || []).map((loc) => `src/i18n/locales/${loc}.json`)
+	);
 
 	// Créer le contexte esbuild
 	const context = await esbuild.context({
