@@ -1,5 +1,6 @@
 export interface ArchiveThisSettings {
 	archiveFolder: string;
+	archiveBasePath: string;
 	deleteWhenEmpty: {
 		inSource: boolean;
 		inArchive: boolean;
@@ -42,6 +43,7 @@ export type OverridePath = {
 
 export const DEFAULT_SETTINGS: ArchiveThisSettings = {
 	archiveFolder: "",
+	archiveBasePath: "",
 	deleteWhenEmpty: {
 		inSource: false,
 		inArchive: false,

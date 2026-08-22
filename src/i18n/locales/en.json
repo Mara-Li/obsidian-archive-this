@@ -45,6 +45,9 @@
     },
     "folder": "Archive folder",
     "folderPlaceholder": "Archives",
+    "basePath": "Relative path base",
+    "basePathDesc": "Optional folder used as the root when preserving the source hierarchy. Leave empty to use the current behavior.",
+    "basePathPlaceholder": "Optional base folder",
     "overridePath": {
       "ref": "Open references"
     },

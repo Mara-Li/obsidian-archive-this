@@ -30,7 +30,10 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 
 		containerEl.addClass("archive-this");
 
-		new Setting(containerEl).setName(i18next.t("settings.folder")).addSearch((cb) => {
+		new Setting(containerEl)
+			.setClass("archive-folder-setting")
+			.setName(i18next.t("settings.folder"))
+			.addSearch((cb) => {
 			cb.setPlaceholder(i18next.t("settings.folderPlaceholder")).setValue(
 				this.settings.archiveFolder
 			);
@@ -39,6 +42,20 @@ export class ArchiveThisSettingTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 			});
 		});
+
+		new Setting(containerEl)
+			.setClass("archive-base-path-setting")
+			.setName(i18next.t("settings.basePath"))
+			.setDesc(i18next.t("settings.basePathDesc"))
+			.addSearch((cb) => {
+				cb.setPlaceholder(i18next.t("settings.basePathPlaceholder")).setValue(
+					this.settings.archiveBasePath
+				);
+				new FolderSuggester(cb.inputEl, this.app, async (result) => {
+					this.settings.archiveBasePath = result.trim();
+					await this.plugin.saveSettings();
+				});
+			});
 
 		new Setting(containerEl).setHeading().setName(i18next.t("settings.empty.title"));
 		new Setting(containerEl)

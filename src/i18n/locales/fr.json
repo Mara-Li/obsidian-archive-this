@@ -45,6 +45,9 @@
     },
     "folder": "Dossier d'archive",
     "folderPlaceholder": "Archives",
+    "basePath": "Base du chemin relatif",
+    "basePathDesc": "Dossier facultatif utilisé comme racine lors de la conservation de la hiérarchie source. Laissez vide pour conserver le comportement actuel.",
+    "basePathPlaceholder": "Dossier de base facultatif",
     "overridePath": {
       "ref": "Ouvrir les références"
     },

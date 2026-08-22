@@ -299,8 +299,8 @@ export default class ArchiveThis extends Plugin {
 	private async restoreFromArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const oldPath = file.path;
-		const newPath = this.getRestorePath(file);
 		try {
+			const newPath = this.getRestorePath(file);
 			// Handle outside folder note before moving the folder
 			if (
 				file instanceof TFolder &&
@@ -421,8 +421,8 @@ export default class ArchiveThis extends Plugin {
 	private async moveToArchive(file: TAbstractFile) {
 		const oldParent = file.parent;
 		const oldPath = file.path;
-		const newPath = this.getArchivePath(file);
 		try {
+			const newPath = this.getArchivePath(file);
 			if (this.settings.overridePaths.length && file instanceof TFolder)
 				await setOriginalPath(file, this.app, this.settings);
 
@@ -447,9 +447,33 @@ export default class ArchiveThis extends Plugin {
 		}
 	}
 
+	private getPathRelativeToBase(path: string): string {
+		const basePath = normalizePath(this.settings.archiveBasePath);
+		if (!basePath) return normalizePath(path);
+
+		const prefix = `${basePath}/`;
+		if (path === basePath) return "";
+		if (!path.startsWith(prefix)) {
+			throw new Error(`File is outside the configured archive base path: ${path}`);
+		}
+		return path.slice(prefix.length);
+	}
+
+	private getPathAfterArchive(path: string): string {
+		const archivePath = normalizePath(this.settings.archiveFolder);
+		const prefix = `${archivePath}/`;
+		if (path === archivePath) return "";
+		if (!path.startsWith(prefix)) {
+			throw new Error(`File is outside the configured archive folder: ${path}`);
+		}
+		return path.slice(prefix.length);
+	}
+
 	private getArchivePath(file: TAbstractFile): string {
 		const rootArchive = normalizePath(this.settings.archiveFolder);
-		const defaultPath = normalizePath(`${rootArchive}/${file.path}`);
+		const relativePath = this.getPathRelativeToBase(file.path);
+		if (!relativePath) throw new Error("Cannot archive the configured base folder itself");
+		const defaultPath = normalizePath(`${rootArchive}/${relativePath}`);
 		if (!this.settings.overridePaths.length) return defaultPath;
 		const fm = getFrontmatterForArchive(file, this.app, this.settings);
 		const stats = file instanceof TFile ? file.stat : undefined;
@@ -463,8 +487,10 @@ export default class ArchiveThis extends Plugin {
 	}
 
 	private getRestorePath(file: TAbstractFile): string {
+		const relativePath = this.getPathAfterArchive(file.path);
+		const basePath = normalizePath(this.settings.archiveBasePath);
 		const defaultPath = normalizePath(
-			file.path.replace(this.settings.archiveFolder, "").trim()
+			basePath ? `${basePath}/${relativePath}` : relativePath
 		);
 		if (!this.settings.overridePaths.length) return defaultPath;
 		const fm = getOriginalPathForRestore(file, this.app, this.settings);

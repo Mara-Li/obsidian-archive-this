@@ -10,6 +10,26 @@
 	background-color: rgba(var(--color-orange-rgb), 0.8);
 }
 
+.archive-this .archive-base-path-setting {
+	display: block;
+}
+
+.archive-this .archive-base-path-setting .setting-item-control {
+	margin-top: 0.75em;
+	width: 100%;
+}
+
+.archive-this .archive-folder-setting .search-input-container,
+.archive-this .archive-base-path-setting .search-input-container {
+	width: min(100%, 32rem);
+	max-width: none;
+}
+
+.archive-this .archive-folder-setting .search-input,
+.archive-this .archive-base-path-setting .search-input {
+	width: 100%;
+}
+
 .archive-this .md-info {
 	background-color: transparent;
 }
